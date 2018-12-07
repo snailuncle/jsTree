@@ -80,3 +80,8 @@ git status 下中文显示乱码问题解决
 git reset --hard
 
 git pull
+
+
+git pull origin master --allow-unrelated-histories
+
+后面加上 --allow-unrelated-histories ， 把两段不相干的 分支进行强行合并
