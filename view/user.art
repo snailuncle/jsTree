@@ -1,0 +1,5 @@
+<ul>
+  <% users.forEach(function (user) {%>
+    <li>用户名字: <%= user.name %></li>
+  <% })%>
+</ul>

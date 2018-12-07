@@ -1,0 +1,465 @@
+<head>
+    <meta charset="utf-8">
+    <title>单向绑定 - 廖雪峰的官方网站</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="keywords" content="javascript,node,jquery,git,python,java,sql,linux,ios,android,教程,软件,编程,开发,运维,云计算,网络,互联网">
+    <meta name="description" content="研究互联网产品和技术，提供原创中文精品教程">
+    <meta property="x-nav" content=" /wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000 ">
+    <link rel="alternate" href="/feed" title="廖雪峰的官方网站" type="application/rss+xml">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/0014757105098309140e608db714251bf071db711a9d183000">
+    <meta property="og:title" content="单向绑定">
+    <meta property="og:description" content="迈向全栈工程师之路的JavaScript教程">
+    <meta property="og:image" content="https://cdn.liaoxuefeng.com/cdn/files/attachments/0014355670304100cdaa4e7e651474d9672ed73797378bd000/l">
+    <meta property="og:tag" content="javascript">
+
+
+    <link rel="stylesheet" href="https://cdn.liaoxuefeng.com/cdn/static/themes/default/css/all.css?v=bbe574c">
+
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="/static/themes/default/css/ie.css?v=bbe574c" />
+    <![endif]-->
+
+    <script src="https://pagead2.googlesyndication.com/pagead/js/r20181203/r20100101/osd.js"></script><script src="https://pagead2.googlesyndication.com/pub-config/r20160913/ca-pub-6727358730461554.js"></script><script src="//hm.baidu.com/hm.js?2efddd14a5f2b304677462d06fb4f964" async=""></script><script src="https://cdn.liaoxuefeng.com/cdn/static/themes/default/js/all.js?v=bbe574c"></script>
+
+    <script id="tplComment" type="text/plain">
+        <div class="uk-comment">
+            <div class="uk-comment-header" style="margin-bottom:0">
+                <a target="_blank" href="/user/{ user.id }"><img class="uk-comment-avatar uk-border-circle x-avatar" src="{ user.image_url }" width="50" height="50" alt=""></a>
+                <h4 class="uk-comment-title"><a target="_blank" href="/discuss/{ board_id }/{ id }">{ name }</a></h4>
+                <div class="uk-comment-meta"><a target="_blank" href="/user/{ user.id }">{ user.name }</a> created at { created_at.toSmartDate() }, Last updated at { updated_at.toSmartDate() }</div>
+            </div>
+            <div class="uk-comment-body x-auto-content">
+                { content|safe }
+            </div>
+        </div>
+    </script>
+
+    <script id="tplCommentReply" type="text/plain">
+        <div class="uk-comment">
+            <div class="uk-comment-header" style="margin-bottom:0">
+                <a target="_blank" href="/user/{ user.id }"><img class="uk-comment-avatar uk-border-circle x-avatar" src="{ user.image_url }" width="50" height="50" alt=""></a>
+                <div class="uk-comment-meta"><a target="_blank" href="/user/{ user.id }">{ user.name }</a></div>
+                <div class="uk-comment-meta">Created at { created_at.toSmartDate() }, Last updated at { updated_at.toSmartDate() }</div>
+            </div>
+            <div class="uk-comment-body x-auto-content">
+                { content|safe }
+            </div>
+        </div>
+    </script>
+
+    <script id="tplCommentInfo" type="text/plain">
+        <li>
+            <div class="x-comment-info">
+                <hr>
+                <a target="_blank" class="uk-button uk-button-small" href="/discuss/{ board_id }/{ id }"><i class="uk-icon-list-ul"></i> 全部讨论</a>
+                &nbsp;
+                <a target="_blank" class="uk-button uk-button-small" href="/discuss/{ board_id }/{ id }#reply"><i class="uk-icon-reply"></i> 回复</a>
+            </div>
+        </li>
+    </script>
+
+    <script id="tplCommentArea" type="text/plain">
+        <div class="x-display-if-signin">
+            <p><button id="comment-make-button" type="button" class="uk-button uk-button-primary"><i class="uk-icon-comment"></i> 发表评论</button></p>
+            <form id="comment-form" class="uk-form" style="display:none;">
+                <fieldset>
+                    <div class="uk-alert uk-alert-danger" style="display:none"></div>
+                    <div class="uk-form-row">
+                        <label>标题:</label>
+                    </div>
+                    <div class="uk-form-row">
+                        <input type="text" name="name" maxlength="100" style="width:100%">
+                    </div>
+                    <div class="uk-form-row">
+                        <label>内容:</label>
+                    </div>
+                    <div class="uk-form-row x-textarea">
+                    </div>
+                    <div class="uk-form-row">
+                        <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-check"></i> 发布</button>
+                        &nbsp;&nbsp;
+                        <button type="button" class="uk-button x-cancel"><i class="uk-icon-close"></i> 取消</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </script>
+
+    <style id="x-doc-style">
+        .x-display-none { display: none; }
+
+        .x-display-if-signin { display: none; }
+
+    </style>
+    <script>
+        // global variables:
+        var g_time = parseFloat('1544067157063');
+        var g_signins = JSON.parse('[{"id":"weibo","icon":"weibo","name":"使用新浪微博登录"}]');
+//
+        var g_user = null;
+//
+        var g_ads = JSON.parse(decodeURIComponent('%7B%22a%22%3A%7B%22name%22%3A%22A%22%2C%22width%22%3A336%2C%22height%22%3A280%2C%22auto_fill%22%3A%22%3Cins%20class%3D%5C%22adsbygoogle%5C%22%20style%3D%5C%22display%3Ainline-block%3Bwidth%3A336px%3Bheight%3A280px%5C%22%20data-ad-client%3D%5C%22ca-pub-6727358730461554%5C%22%20data-ad-slot%3D%5C%228492060710%5C%22%3E%3C%2Fins%3E%5Cn%3Cscript%3E%5Cn(adsbygoogle%20%3D%20window.adsbygoogle%20%7C%7C%20%5B%5D).push(%7B%7D)%3B%5Cn%3C%2Fscript%3E%22%2C%22num_auto_fill%22%3A2%2C%22adperiods%22%3A%5B%7B%22user%22%3A%22%E5%BC%A0_%E4%BB%81%E9%98%B3%22%2C%22admaterials%22%3A%5B%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001536417614567276d9787cc5542af9eb9ffe0f5b99f02000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22http%3A%2F%2Fwww.zhufengpeixun.cn%2Fmain%2Fcourse%2Findex.html%3Fref%3Dliaoxuefeng%22%7D%5D%7D%2C%7B%22user%22%3A%22%E8%B7%AF%E9%A3%9E%E5%AD%A6%E5%9F%8E%22%2C%22admaterials%22%3A%5B%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001540546474780fbb5c711bade4c9991d44dd1b798a112000%2F0%22%2C%22weight%22%3A50%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22https%3A%2F%2Fwww.luffycity.com%2Fhome%2Fcamp%3Fsource%3Dliaoxuefeng4%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001543285033690a5f1b367a6fe4c48a9d505a6f82b6c30000%2F0%22%2C%22weight%22%3A50%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22https%3A%2F%2Fwww.luffycity.com%2Fhome%2Fcamp%3Fsource%3Dliaoxuefeng6%22%7D%5D%7D%2C%7B%22user%22%3A%22%E5%BC%80%E8%AF%BE%E5%90%A7%E5%AE%98%E6%96%B9%E5%BE%AE%E5%8D%9A%22%2C%22admaterials%22%3A%5B%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F0015307792921604c694e6f52484b95a172330562ca5537000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22javascript%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fweb%3Fss%3Dfs3%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F00153077933541301079ab48174446984cf31ed5502a66d000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22python%2Cgit%2Cindex%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fpython%3Fss%3Dfs1%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530779368629a70e732648d14f34a70843db39c9a4c5000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fpython%3Fss%3Dfs2%22%7D%5D%7D%2C%7B%22user%22%3A%22%E5%BC%80%E8%AF%BE%E5%90%A7%E5%AE%98%E6%96%B9%E5%BE%AE%E5%8D%9A%22%2C%22admaterials%22%3A%5B%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530779306382ebf382b76d3846248dfbc35f192f35ac000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22javascript%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fpython%3Fss%3Dss3%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530779486466f66c87e0fc794ca79d66bf59cd42a10f000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22python%2Cgit%2Cindex%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fweb%3Fss%3Dss1%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530779955145513c19ad239446a683a912e3229f7740000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fweb%3Fss%3Dss2%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530780935500c4618c8be6cc48a69260dbb200325124000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22python%2Cgit%2Cindex%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fjava%3Fss%3Dss4%22%7D%5D%7D%5D%7D%2C%22b%22%3A%7B%22name%22%3A%22B%22%2C%22width%22%3A300%2C%22height%22%3A600%2C%22auto_fill%22%3A%22%3Cins%20class%3D%5C%22adsbygoogle%5C%22%20style%3D%5C%22display%3Ainline-block%3Bwidth%3A300px%3Bheight%3A600px%5C%22%20data-ad-client%3D%5C%22ca-pub-6727358730461554%5C%22%20data-ad-slot%3D%5C%224769867116%5C%22%3E%3C%2Fins%3E%5Cn%3Cscript%3E%5Cn(adsbygoogle%20%3D%20window.adsbygoogle%20%7C%7C%20%5B%5D).push(%7B%7D)%3B%5Cn%3C%2Fscript%3E%22%2C%22num_auto_fill%22%3A2%2C%22adperiods%22%3A%5B%7B%22user%22%3A%22%E5%BC%80%E8%AF%BE%E5%90%A7%E5%AE%98%E6%96%B9%E5%BE%AE%E5%8D%9A%22%2C%22admaterials%22%3A%5B%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F0015307797110987f55c6b87fd54083bc390e8ff6b0d60c000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22python%2Cgit%2Cindex%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fpython%3Fss%3Dfbg1%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530779800744e83fef4eebab401aab4bbe8699af6b51000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22javascript%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fweb%3Fss%3Dfbg3%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530780197211282e93c0467f4b79b6e1be1a0efb414e000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fpython%3Fss%3Dfbg2%22%7D%5D%7D%2C%7B%22user%22%3A%22%E5%BC%80%E8%AF%BE%E5%90%A7%E5%AE%98%E6%96%B9%E5%BE%AE%E5%8D%9A%22%2C%22admaterials%22%3A%5B%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530167032294c342ce74629b41ffaebf0ba8528d5f37000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22python%2Cgit%2Cindex%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fjava%3Fss%3Dsbg1%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530167057850ab00994c0e914e59a996b275fc1aac42000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fjava%3Fss%3Dsbg2%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F0015307798443236e70647769674722a45bf2635b31c045000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22javascript%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fpython%3Fss%3Dsbg3%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530779942804e5a23ac1c027456499629baec954b7e0000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fweb%3Fss%3Dsbg2%22%7D%2C%7B%22image%22%3A%22%2Ffiles%2Fattachments%2F001530780351101304e7e7655174965b2357ef3512940c4000%2F0%22%2C%22weight%22%3A100%2C%22keywords%22%3A%22python%2Cgit%2Cindex%22%2C%22url%22%3A%22http%3A%2F%2Fpro.kaikeba.com%2Fcourse%2Fweb%3Fss%3Dsbg1%22%7D%5D%7D%5D%7D%7D'));
+        var meta_keywords = $('meta[property="og:tag"]').attr('content');
+        if (meta_keywords) {
+            meta_keywords = meta_keywords.toLowerCase().split(',');
+            _.mapObject(g_ads, function (adslot, adkey) {
+                _.map(adslot.adperiods, function (adp) {
+                    var matched_adms = _.filter(adp.admaterials, function (adm) {
+                        var ks = adm.keywords.toLowerCase().split(',');
+                        // ad keywords = [a, b, c, d]
+                        // meta keywords = [b, c]
+                        var ms = _.filter(meta_keywords, function (mkey) {
+                            return ks.indexOf(mkey) >= 0;
+                        });
+                        return ms.length > 0;
+                    });
+                    if (matched_adms.length > 0) {
+                        adp.admaterials = matched_adms;
+                    }
+                });
+            });
+        }
+        $(function () {
+            var fnRandom = function (adms) {
+                if (adms.length === 1) {
+                    return adms[0];
+                }
+                var
+                    weights = _.map(adms, function (m) {
+                        return m.weight;
+                    }),
+                    total_weights = _.reduce(weights, function (ax, w) {
+                        return ax + w;
+                    }, 0),
+                    rnd = Math.random(),
+                    ws = 0,
+                    i,
+                    hit;
+                for (i=0; i<weights.length; i++) {
+                    ws = ws + weights[i];
+                    if (rnd < ws / total_weights) {
+                        return adms[i];
+                    }
+                }
+                return adms[0];
+            };
+            _.mapObject(g_ads, function (ad, k) {
+                _.map(ad.adperiods, function (adp) {
+                    if (adp.admaterials.length === 0) {
+                        add_sponsor('#x-sponsor-' + k, ad.width, ad.height, adp.user, 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAAAkCAMAAAB2bcIBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjE0NDhCRDA3QTM3MjExRTc4QjI0RjRCQjQzOTgwRDc3IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjE0NDhCRDA4QTM3MjExRTc4QjI0RjRCQjQzOTgwRDc3Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MTQ0OEJEMDVBMzcyMTFFNzhCMjRGNEJCNDM5ODBENzciIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MTQ0OEJEMDZBMzcyMTFFNzhCMjRGNEJCNDM5ODBENzciLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5Adyw0AAAADFBMVEXm5uazs7NdXV3///8WehxTAAAABHRSTlP///8AQCqp9AAAAaVJREFUeNrslsuWwyAMQyXy//88LX7JhEw7q9mQRQ8QEBcjO8X1zw8OwAE4AAdA2xzvh7Nj7eq/RuYQ+STl71PR1ayPlBt4AkCbUgBGgBwwySLjsoCLGheAwT0A7Hz0GZwdOxVCoPpXncUA2F+L2pTD6HobAAor8lwxzlgHV2yXhYoI6zXiIjiXse/zCFA7CgCK25sVzABw2dew8FrzbwAgNQJzqa6ydnOLATkw2XeZbwoATwDoFu8RUEE4AJluCQ+gbarAX0QgjEo2ALtDiiBmTN8/Qy+LS45cewA+mjAzOc+VTxe8IgJuh4DLRFVHRMS+SEOFYANQR8gVjLoe9FqGbQT2lUhMSGqIow6Q68UxI2DJNwHMueqZmweyDjxEoKCpgVUoNZgNTF2fri4XYPQswMdC5Dt0gF55x5W3TA8qxq1u1IZrIcJzGkbRvc/z/ICU4iCrNHQTsLISVco/Afxiu2vzcWofHbSvDe9q3xQiWYM7qOzAbplI7MxCbtQ6QHPXkoMMN2dD/y/IYCZNzUQmzU1tvlvnn79kB+AAHIADMJ8fAQYAbSgvpXjD4xEAAAAASUVORK5CYII=', '/');
+                        return;
+                    }
+                    var hit = fnRandom(adp.admaterials);
+                    add_sponsor('#x-sponsor-' + k, ad.width, ad.height, adp.user, 'https://cdn.liaoxuefeng.com/cdn'+ hit.image, hit.url);
+                });
+                var i;
+                for (i=0; i<ad.num_auto_fill; i++) {
+                    add_sponsor('#x-sponsor-' + k, ad.width, ad.height, ad.auto_fill);
+                }
+            });
+        });
+    </script>
+    <script>
+        (function () {
+            eval(decodeURIComponent('%69f%28%21get%43%6F%6F%6B%69%65(%27%61tsp%27))%73%65%74C%6F%6F%6B%69%65(%27%61tsp%27%2C%20%271544067157063%5F%27%2Bnew%20Date%28%29.getTime%28%29%2C%20580%29%3B'));
+        })();
+    </script>
+
+
+
+
+<style>
+.x-wiki-visible {
+    display: block;
+}
+.x-can-edit {
+
+    display: none;
+
+}
+</style>
+
+<script>
+loadComments('0014757105098309140e608db714251bf071db711a9d183000');
+
+var
+    comment_type = 'wikipage',
+    comment_ref_id = '0014757105098309140e608db714251bf071db711a9d183000',
+    comment_tag = 'javascript';
+
+function onAuthSuccess() {
+    initCommentArea(comment_type, comment_ref_id, comment_tag);
+}
+
+$(function () {
+    if (g_user !== null) {
+        initCommentArea(comment_type, comment_ref_id, comment_tag);
+    }
+});
+
+$(function () {
+    $('#0014757105098309140e608db714251bf071db711a9d183000').addClass('uk-active');
+    $('#off-0014757105098309140e608db714251bf071db711a9d183000').addClass('uk-active');
+    // expand current:
+    expandActiveNode();
+    // add prev, next:
+    $('div.x-wiki-prev-next').css('padding-left', '15px').css('padding-right', '15px');
+    var prev = getPrevNode();
+    var next = getNextNode();
+    if (prev) {
+        $('div.x-wiki-prev-next').append("<a href=\"" + prev.find("a").attr("href") + "\"><i class=\"uk-icon-chevron-left\"></i> 上一页</a>");
+    }
+    if (next) {
+        $('div.x-wiki-prev-next').append("<a href=\"" + next.find("a").attr("href") + "\" class=\"uk-float-right\">下一页 <i class=\"uk-icon-chevron-right\"></i></a>");
+    }
+    $('div.x-wiki-prev-next').after('<hr>');
+});
+
+function getPrevNode() {
+    var activeNode = $('#0014757105098309140e608db714251bf071db711a9d183000');
+    var prev = activeNode.prev('div');
+    var lastChild;
+    if (prev.get(0)) {
+        lastChild = prev.find('div:last');
+        if (lastChild.get(0)) {
+            return lastChild;
+        }
+        return prev;
+    }
+    prev = activeNode.parent('div');
+    if (prev.get(0)) {
+        return prev;
+    }
+    return null;
+}
+
+function getNextNode() {
+    var activeNode = $('#0014757105098309140e608db714251bf071db711a9d183000');
+    var next = activeNode.find('div:first');
+    var node;
+    if (next.get(0)) {
+        return next;
+    }
+    next = activeNode.next('div');
+    if (next.get(0)) {
+        return next;
+    }
+    node = activeNode;
+    for (;;) {
+        node = node.parent('div');
+        if (node.get(0)) {
+            next = node.next('div');
+            if (next.get(0)) {
+                return next;
+            }
+        } else {
+            break;
+        }
+    }
+    return null;
+}
+
+function expandActiveNode() {
+    var activeNode = $('#0014757105098309140e608db714251bf071db711a9d183000');
+    for (;;) {
+        i = activeNode.find('i').get(0);
+        if (i) {
+            expandWikiNode(i);
+        }
+        activeNode = activeNode.parent();
+        if (! activeNode.is('div')) {
+            break;
+        }
+    }
+}
+
+function toggleWikiNode(icon) {
+    var
+        $i = $(icon),
+        $div = $i.parent(),
+        expand = $div.attr('expand');
+    if (expand === 'true') {
+        collapseWikiNode(icon);
+    } else {
+        expandWikiNode(icon);
+    }
+}
+
+function collapseWikiNode(icon, rec) {
+    var
+        $i = $(icon),
+        $div = $i.parent();
+    $div.attr('expand', 'false');
+    $i.removeClass('uk-icon-minus-square-o');
+    $i.addClass('uk-icon-plus-square-o');
+    $div.find('>div').hide();
+    if (rec) {
+        $div.find('>div>i').each(function () {
+            collapseWikiNode(this, rec);
+        });
+    }
+}
+
+function expandWikiNode(icon, rec) {
+    var
+        $i = $(icon),
+        $div = $i.parent();
+    $div.attr('expand', 'true');
+    $i.removeClass('uk-icon-plus-square-o');
+    $i.addClass('uk-icon-minus-square-o');
+    $div.find('>div').show();
+    if (rec) {
+        $div.find('>div>i').each(function () {
+            expandWikiNode(this, rec);
+        });
+    }
+}
+
+</script>
+
+
+<style>
+.x-center {
+    margin: 0;
+}
+
+
+.x-center {
+    margin-left: 316px;
+    padding-left: 15px;
+}
+
+
+
+
+</style>
+
+<!-- BEGIN custom_header -->
+<script src="https://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+<script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<script>
+var CDN = 'https://cdn.liaoxuefeng.com/cdn';
+
+// add table class:
+$(function () {
+    $('table').addClass('uk-table');
+});
+
+function shareToWeibo() {
+    var url = 'http://service.weibo.com/share/share.php?type=button&ralateUid=1658384301&language=zh_cn&appkey=1391944217&searchPic=false&style=full';
+    url = url + '&title=' + encodeURIComponent(document.title);
+    url = url + '&url=' + encodeURIComponent(location.href);
+    url = url + '&pic=' + encodeURIComponent($('meta[property="og:image"]').attr('content'));
+    window.open(url, 'share_liaoxuefeng_com', 'top=200,left=400,width=600,height=380,directories=no,menubar=no,toolbar=no,resizable=no');
+}
+
+var SHARE_TO_WEIBO = '<p><a href="#0" onclick="shareToWeibo()" class="uk-button uk-button-danger"><i class="uk-icon-weibo"></i> 分享到微博</button></p>';
+</script>
+
+<script>
+  // crypto:
+  if (location.pathname.indexOf('/wiki/0015223693709562f80977e6c9549f0a1e17640a61433d6000') === 0) {
+    $.ajax({ url: '/static/js/crypto.js?v1', dataType: 'script', cache: true });
+  }
+  // sql: import alasql
+  if (location.pathname.indexOf('/wiki/001508284671805d39d23243d884b8b99f440bfae87b0f4000') === 0) {
+    $.ajax({
+      url: '//cdn.liaoxuefeng.com/static/js/alasql.js',
+      dataType: 'script',
+      cache: true,
+      success: function () {
+        console.log('alasql loaded.');
+        alasql.options.joinstar = 'underscore';
+        var
+          i,
+          classes_data = [['一班'], ['二班'], ['三班'], ['四班']],
+          students_data = [[1, '小明', 'M', 90], [1, '小红', 'F', 95], [1, '小军', 'M', 88], [1, '小米', 'F', 73], [2, '小白', 'F', 81], [2, '小兵', 'M', 55], [2, '小林', 'M', 85], [3, '小新', 'F', 91], [3, '小王', 'M', 89], [3, '小丽', 'F', 88]];
+        alasql('CREATE TABLE classes (id BIGINT NOT NULL AUTO_INCREMENT, name VARCHAR(10) NOT NULL, PRIMARY KEY (id))');
+        alasql('CREATE TABLE students (id BIGINT NOT NULL AUTO_INCREMENT, class_id BIGINT NOT NULL, name VARCHAR(10) NOT NULL, gender CHAR(1) NOT NULL, score BIGINT NOT NULL, PRIMARY KEY (id))');
+        for (i=0; i<classes_data.length; i++) {
+          alasql('INSERT INTO classes (name) VALUES (?)', classes_data[i]);
+        }
+        for (i=0; i<students_data.length; i++) {
+          alasql('INSERT INTO students (class_id, name, gender, score) VALUES (?, ?, ?, ?)', students_data[i]);
+        }
+      }
+    });
+  }
+</script>
+
+<script>
+// git: add app link:
+$(function () {
+  if (location.pathname.indexOf('/wiki/0013739516305929606dd18361248578c67b8067c8c017b000')===0) {
+    $('.x-wiki-info').parent().css('position', 'relative').append('<a href="/webpage/gitapp" target="_blank" style="display:block;width:135px;height:40px;position:absolute;right:10px;top:10px;"><img src="' + CDN + '/static/img/download-on-the-app-store.png" /></a>');
+  }
+});
+</script>
+
+<script>
+// add new:
+$(function () {
+  var img_new = '<img style="position:absolute;right:-10px;top:3px;z-index:999" src="' + CDN + '/files/attachments/001477919415261ebc91072244149e0ab69f60ae2abe39f000/l">';
+  $('#ul-navbar a[href="https://www.feiyangedu.com/category/CryptoCurrency"]').parent().append(img_new);
+  $('#ul-navbar a[href="http://pro.kaikeba.com/course/java/?ss=topj"]').parent().append(img_new);
+});
+</script>
+
+<script>
+// python 2.7: add py3 link:
+$(function () {
+  if (location.pathname.indexOf('/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000')===0) {
+    $('#main .x-container').prepend('<div class="uk-alert uk-alert-danger">您目前正在学习的2.7版本的Python教程已过期，请立刻前往最新的Python 3 教程：<a href="/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000" class="uk-button uk-button-success">我要学 Python 3</a></div>');
+  }
+});
+</script>
+
+<script>
+// add share:
+$(function () {
+  if (location.pathname.indexOf('/wiki/')===0) {
+    $('.x-wiki-content').find('a[href^=http]').attr('target', '_blank');
+    if (!window.hurry) {
+      $('.x-wiki-content').after('<h3>感觉本站内容不错，读后有收获？</h3><p><a target="_blank" href="/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要小额赞助，鼓励作者写出更好的教程</a></p><h3>还可以分享给朋友</h3>' + SHARE_TO_WEIBO);
+    } else {
+      $('.x-wiki-content').after('<h3>等待时间太久？</h3><p><a target="_blank" href="/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要催促作者更新教程</a></p><h3>还可以分享给朋友</h3>' + SHARE_TO_WEIBO);
+    }
+  }
+});
+</script>
+
+<script>
+// article: add share:
+$(function () {
+  if (location.pathname.indexOf('/article/')===0) {
+    $('.x-article-content').find('a[href^=http]').attr('target', '_blank');
+    $('.x-article-content').after('<h3>感觉本站内容不错，读后有收获？</h3><p><a target="_blank" href="/webpage/donate" class="uk-button uk-button-primary"><i class="uk-icon-cny"></i> 我要小额赞助，鼓励作者写出更好的文章</a></p><h3>还可以分享给朋友</h3>' + SHARE_TO_WEIBO);
+  }
+});
+</script>
+
+<script>
+// footer:
+$(function() {
+  $('.x-footer-copyright').find('p').append('<br>本网站运行在<a target="_blank" href="https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=cz36baxa">阿里云</a>上并使用<a target="_blank" href="https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=cz36baxa">阿里云CDN</a>加速。');
+  $('.x-footer').append('<hr><div style="text-align:center"><p>友情链接: <a href="http://www.shi-ci.com" target="_blank">中华诗词</a> - <a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=cz36baxa&amp;utm_source=cz36baxa" target="_blank">阿里云</a> - <a href="https://bbs.ksyun.com" target="_blank">金山云</a> - <a href="http://mitpress.mit.edu/sicp/full-text/book/book.html" target="_blank">SICP</a> - <a href="http://www.4clojure.com/" target="_blank">4clojure</a> - <a href="https://www.linuxprobe.com/" target="_blank">linuxprobe</a> </p></div>');
+});
+</script>
+
+<script>
+// tongji:
+var _hmt = _hmt || [];
+(function () {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?2efddd14a5f2b304677462d06fb4f964";
+  hm.async = "async";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<!-- END custom_header -->
+<link rel="preload" href="https://adservice.google.com/adsid/integrator.js?domain=www.liaoxuefeng.com" as="script"><script type="text/javascript" src="https://adservice.google.com/adsid/integrator.js?domain=www.liaoxuefeng.com"></script><link rel="preload" href="https://pagead2.googlesyndication.com/pagead/js/r20181203/r20180604/show_ads_impl.js" as="script"></head>

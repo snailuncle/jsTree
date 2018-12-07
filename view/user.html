@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>tree测试222</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/twitter-bootstrap/4.1.2/css/bootstrap.min.css" />
+  <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../dist/themes/default/style.min.css" />
+  <script src="../dist/jstree.min.js"></script>
+  <script>
+    $(function () {
+      $('#jstree_demo_div').jstree();
+    });
+    // $('#jstree_demo_div').on("changed.jstree", function (e, data) {
+    //   console.log(data.selected);
+    // });
+    // $('button').on('click', function () {
+    //   $('#jstree').jstree(true).select_node('child_node_1');
+    //   $('#jstree').jstree('select_node', 'child_node_1');
+    //   $.jstree.reference('#jstree').select_node('child_node_1');
+    // });
+    $(function () {
+      $('#html1').jstree()
+    });
+    $(function () {
+      $('#jstree').jstree({
+        "core": {
+          "animation": 0,
+          "themes": {
+            "dots": true,
+            "icons": true,
+            "stripes": false
+          },
+          "check_callback": true,
+          "multiple": false,
+          'data': data
+        },
+        "types": {
+          "#": {
+            "max_children": 5,
+            "max_depth": 11,
+          },
+          "default": {
+            "icon": "false",
+            "valid_children": ["default", "text"]
+          },
+          "text": {
+            "valid_children": []
+          }
+        },
+        "plugins": ["state", "types", "wholerow"]
+      });
+    });
+
+
+
+  </script>
+  <script>
+    function myFunction() {
+      x = document.getElementById("文件夹1"); // 找到元素
+      x.style.color = "red"; // 改变内容
+      x.style.fontSize = "larger";
+    }
+  </script>
+  <script>
+  $(function() {
+    // var dirInfo={{dirInfo}}
+
+  });
+  </script>
+    <script>
+        $(document).ready(function(){
+          $("#b01").click(function(){
+            $.post("/getDirInfo",
+            {
+              name:"test"
+            },
+            function(data,status){
+              console.log("数据：" + data + "\n状态：" + status);
+              $('#container2').jstree({
+                'core' : {
+                  'data' : data
+                }
+              });
+            });
+          });
+        });
+    </script>
+</head>
+<!-- 传递给网页一个数组,数组中是文件夹和文件,用json格式存放 -->
+<body>
+  <h1>欢迎光临{{user}}</h1>
+    <div id="myDiv"><h2>通过 AJAX 改变文本</h2></div>
+    <button id="b01" type="button">改变内容</button>
+
+
+    <div id="container2"><h3>container2</h3></div>
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-md-12 column">
+        <h3 class="text-center">
+          这里放当前项目的名字
+        </h3>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-2 column">
+        <div class="list-group">
+          <div class="list-group-item active">项目列表</div>
+          <div id="jstree">
+            <!-- in this example the tree is populated from inline HTML -->
+            <ul>
+              <li>第一个文件夹
+                <ul>
+                  <li id="child_node_1">第一个脚本</li>
+                  <li data-jstree='{"icon":"https://www.jstree.com/tree.png"}'>第二个脚本</li>
+                  <!-- <li data-jstree ='{“icon”：“path / file.png”}'> </li> -->
+                  <!-- <li data-jstree='{"icon":"fa fa-check"}'>  -->
+                  <!-- var nodeId = $(#tree).jstree(true).get_node("node_name"); -->
+                  <!-- $("#tree").jstree(true).set_icon(nodeId, "/images/blabla.png"); -->
+                </ul>
+              </li>
+              <li>第二个文件夹</li>
+            </ul>
+          </div>
+          <div id="html1">
+            <ul>
+              <li class="jstree-open" id="node_1">使用class展开的文件夹
+                <ul>
+                  <li>
+                    <a href="#" class="jstree-clicked">第三个脚本</a>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+            <ul>
+
+              <li data-jstree='{"opened":true,"selected":true}'>使用data-jstree展开的文件夹
+                <ul>
+                  <li data-jstree='{"disabled":true}'>第四个脚本</li>
+                  <li data-jstree='{"icon":"https://jstree.com/tree.png"}'>
+                    第五个脚本</li>
+                  <li data-jstree='{"icon":"glyphicon glyphicon-leaf"}'>
+                    第六个脚本</li>
+                </ul>
+              </li>
+            </ul>
+            <ul>
+              <li id="文件夹1" onclick="myFunction()" data-jstree='{"opened":true,"selected":true}'>
+                默认选中的文件夹
+                <ul>
+                  <li data-jstree='{"icon":"glyphicon glyphicon-leaf"}'>1</li>
+                  <li data-jstree='{"icon":"fa fa-check"}'>2</li>
+                  <li>3</li>
+                </ul>
+              </li>
+              <li>
+                文件夹2
+              </li>
+              <li>
+                文件夹3
+              </li>
+              <li>
+                文件夹4
+              </li>
+              <li>
+                文件夹5
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9 column">
+        <h3>
+          这里放选中的脚本的名字
+        </h3>
+        <p>
+          这里放选中的脚本的具体代码
+        </p>
+      </div>
+      <div class="col-md-1 column">
+        <div class="btn-group btn-group-vertical btn-group-lg">
+          <button type="button" class="btn btn-default btn-danger">编辑</button>
+          <button type="button" class="btn btn-default btn-info">保存</button>
+          <button type="button" class="btn btn-default btn-success">运行当前项目的入口文件index.js</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
