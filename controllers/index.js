@@ -25,9 +25,43 @@ var fn_index = async (ctx, next) => {
 //   });
 // }
 
+function getPath(nodeData){
+  var nodePath=""
+  // if(nodeData.node.parent=="#"){
+  //   console.log("这个是根目录下的文件");
+
+  //   nodePath=nodePath.old
+  //   console.log('nodePath=')
+  //   console.log(nodePath)
+  // }else{
+  //   console.log("这个不是根目录下的文件,他的父文件夹们=");
+  //   console.tabletable(nodePath.node.parents)
+
+  // }
+  return nodePath
+}
 
 
 
+var fn_jstree = async (ctx, next) => {
+  var jstreeInfo=ctx.request.query
+  console.log("jstreeInfo:");
+  console.log(jstreeInfo);
+  // // { operation: 'rename_node', id: 'j1_2', text: '111111111' }
+  // ctx.body={"id":jstreeInfo.id}
+  // // var nodeData=jstreeInfo.nodeData
+  // console.log("nodeData=")
+  // console.table(nodeData)
+
+  // //重命名这个文件
+  // //首先获取该节点的路径
+  // var nodePath=getPath(nodeData)
+  //   console.log('nodePath=')
+  //   console.log(nodePath)
+
+
+
+};
 
 var fn_signin = async (ctx, next) => {
   var userinfo=ctx.cookies.get('userinfo')
@@ -43,7 +77,6 @@ var fn_signin = async (ctx, next) => {
       ctx.cookies.set('userinfo',user,{
         maxAge:1000*60*60*24
       })
-
 
 
       await ctx.render('user', {   // 渲染content模板
@@ -82,49 +115,36 @@ var fn_getDirInfo = async (ctx, next) => {
     }
   ]
   function findSync(startPath) {
-      let result=[];
-      function finder(path) {
-          let files=fs.readdirSync(path);
+
+      function finder(filePath) {
+        console.log("finder(filePath)  filePath="+filePath)
+        // let fPath=join(path,val);
+        let stats=fs.statSync(filePath);
+        if(stats.isDirectory()) {
+          console.log(filePath+"是文件夹")
+          var children=[]
+          let files=fs.readdirSync(filePath);
           files.forEach((val,index) => {
+            var inpath=filePath+"/"+val
+            children.push(finder(inpath))
+          })
 
-
-              let fPath=join(path,val);
-              let stats=fs.statSync(fPath);
-              if(stats.isDirectory()) {
-                let 子文件数组=fs.readdirSync(fPath);
-                for(let i=0;i<子文件数组.length;i++){
-                  子文件数组[i]={
-                    "text":子文件数组[i],
-                    "icon":"../static/img/file.png",
-                  }
-                }
-
-                result.push({
-                  "text":val,
-                  "icon":"../static/img/folder.png",
-                  "children":子文件数组
-                });
-                子文件数组=fs.readdirSync(fPath);
-                for(let i=0;i<子文件数组.length;i++){
-                  let inFPath=fPath+"/"+子文件数组[i]
-                  let stats=fs.statSync(inFPath);
-                  if(stats.isDirectory()) {
-                    finder(inFPath)
-                  }
-                }
-              };
-              if(stats.isFile()) {
-
-                result.push({
-                  "text":val,
-                  "icon":"https://www.jstree.com/tree.png"
-                });
-              };
-          });
-
+          return {
+            "text":path.basename(filePath),
+            "icon":"../static/img/folder.png",
+            "children":children
+          }
+        }
+        if(stats.isFile()) {
+          console.log(filePath+"是文件")
+          return {
+            "text":path.basename(filePath),
+            "icon":"../static/img/file.png"
+          }
+        };
       }
-      finder(startPath);
-      return result;
+
+      return finder(startPath);
   }
   var dirInfo=null
   var root=""
@@ -172,6 +192,8 @@ var fn_hello = async (ctx, next) => {
 module.exports = {
   'GET /': fn_index,
   'POST /signin': fn_signin,
+  'GET /signin': fn_jstree,
   'POST /getDirInfo': fn_getDirInfo,
   'GET /hello/:name': fn_hello
 };
+// http://localhost:3000/signin?operation=rename_node&id=j1_1&text=11111 405 (Method Not Allowed)

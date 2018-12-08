@@ -139,9 +139,13 @@ $(document).ready(function () {
               });
           })
           .on('rename_node.jstree', function (e, data) {
+            console.table(e)
+            console.table(data)
             $.get('?operation=rename_node', {
                 'id': data.node.id,
-                'text': data.text
+                'text': data.text,
+                'parent': data.node.parent,
+                'parents': data.node.parents,
               })
               .done(function (d) {
                 data.instance.set_id(data.node, d.id);
