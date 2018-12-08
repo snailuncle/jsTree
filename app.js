@@ -6,7 +6,10 @@ const path = require('path');
 const bodyParser=require('koa-bodyparser')
 
 const controller = require('./controller');
-
+//引入子模块子路由
+const router = require('koa-router')();
+const jstreeapi=require('./router/jstreeapi.js')
+const user=require('./router/admin/user.js')
 
 const app = new Koa();
 
@@ -50,8 +53,9 @@ render(app, {
 // 最后一个middleware处理URL路由：
 
 app.use(controller());
-
-
+router.use('/jstreeapi',jstreeapi)
+router.use('/user',user)
+app.use(router.routes()).use(router.allowedMethods())
 
 
 

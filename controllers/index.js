@@ -38,7 +38,14 @@ var fn_signin = async (ctx, next) => {
       password = ctx.request.body.password || '';
   console.log(`signin with name: ${name}, password: ${password}`);
   if (name === 'autojs@qq.com' && password === '123') {
+
       const user = name
+      ctx.cookies.set('userinfo',user,{
+        maxAge:1000*60*60*24
+      })
+
+
+
       await ctx.render('user', {   // 渲染content模板
         user
       });
