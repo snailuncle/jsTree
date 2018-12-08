@@ -95,12 +95,13 @@ var fn_getDirInfo = async (ctx, next) => {
                 for(let i=0;i<子文件数组.length;i++){
                   子文件数组[i]={
                     "text":子文件数组[i],
-                    "icon":"https://www.jstree.com/tree.png"
+                    "icon":"../static/img/file.png",
                   }
                 }
 
                 result.push({
                   "text":val,
+                  "icon":"../static/img/folder.png",
                   "children":子文件数组
                 });
                 子文件数组=fs.readdirSync(fPath);
