@@ -41,20 +41,50 @@ function getPath(nodeData){
   return nodePath
 }
 
+// function getNode(nodeID){
+//   var $ = require("jquery");
+//   var jstreeID = 'jstree';
+
+//   var node = $('#' + jstreeID).jstree("get_node", nodeID);
+//   console.log("getNode(nodeID)  node=")
+//   console.table(node)
+//   return node
+// }
 
 
 var fn_jstree = async (ctx, next) => {
+  // // 'id': data.node.id,
+  // // 'text': data.text,
+  // // 'parent': data.node.parent,
+  // // 'parents': data.node.parents,
   var jstreeInfo=ctx.request.query
   console.log("jstreeInfo:");
   console.log(jstreeInfo);
-  // // { operation: 'rename_node', id: 'j1_2', text: '111111111' }
-  // ctx.body={"id":jstreeInfo.id}
+  var operation=jstreeInfo.operation
+  var id=jstreeInfo.id
+  var text=jstreeInfo.text
+  var parentFileName=jstreeInfo.parentFileName
+  var parentsFileName=jstreeInfo.parentsFileName
+
+  ctx.body={"id":id}
+
+
+  console.log("parentsFileName="+parentsFileName)
+  let  join = require('path').join;
+  let  path = require('path');
+  // path.join(__dirname, "./test.txt")
+
+  var 绝对路径=path.join(__dirname,'../'+parentsFileName)+"/"+text
+  console.log("绝对路径="+绝对路径);
+
+  // $("#project-name").text('选中的文件的父目录='+getNode(data.node.parent).text);
+
   // // var nodeData=jstreeInfo.nodeData
   // console.log("nodeData=")
   // console.table(nodeData)
 
   // //重命名这个文件
-  // //首先获取该节点的路径
+  // //首先获取该节点的绝对路径  __dirname+相对路径
   // var nodePath=getPath(nodeData)
   //   console.log('nodePath=')
   //   console.log(nodePath)

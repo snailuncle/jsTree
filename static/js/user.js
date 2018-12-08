@@ -141,11 +141,27 @@ $(document).ready(function () {
           .on('rename_node.jstree', function (e, data) {
             console.table(e)
             console.table(data)
+            var parentFileName=getNode(data.node.parent).text
+            console.log("parentsFileName=")
+            console.table(data.node["parents"])
+            var parentsFileName=data.node["parents"].map((id)=>{
+              return getNode(id).text
+            })
+            console.log("parentsFileName=")
+            console.table(parentsFileName)
+            parentsFileName.reverse();
+            parentsFileName.shift();
+            parentsFileName=parentsFileName.join('/')
+
+            console.log("parentsFileName=")
+            console.table(parentsFileName)
+
+
             $.get('?operation=rename_node', {
                 'id': data.node.id,
                 'text': data.text,
-                'parent': data.node.parent,
-                'parents': data.node.parents,
+                'parentFileName': parentFileName,
+                'parentsFileName': parentsFileName,
               })
               .done(function (d) {
                 data.instance.set_id(data.node, d.id);
@@ -190,12 +206,27 @@ $(document).ready(function () {
             // $("a").attr('href',"http://www.bilibili.com");
             // $("#a1").text("B站");
             // $(".a2").text("你值得拥有");
-            $("#project-name").text(sltText);
-            $("#script-name").text(sltText);
-            $("#script-detail").text(sltText);
+            console.table(data)
+
+            $("#script-name").text(data.node);
+            console.table(data.node)
+            // $("#project-name").text('选中的文件的父目录='+getNode(data.node.parent).text);
+            // $("#script-name").text('选中的文件='+data.node.text);
+            // var children=data.node.children
+            // var childrenName=''
+            // for(let i=0;i<children.length;i++){
+            //   childrenName+="\n"+getNode(children[i]).text
+            // }
+
+            // $("#script-detail").text('选中的文件的子目录='+childrenName);
           })
       });
     });
 });
 
-
+function getNode(nodeID){
+  var node = $('#' + jstreeID).jstree("get_node", nodeID);
+  console.log("getNode(nodeID)  node=")
+  console.table(node)
+  return node
+}
