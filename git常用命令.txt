@@ -10,26 +10,26 @@ git status -s
 git branch
 
 创建分支
-git checkout master -b daily-12-09-获取成功更改后的文件绝对路径
+git checkout master -b daily-12-09-使用promise同步化回调函数
 
 提交到暂存区
 git add .
 
 提交评论
-git commit -m 'daily-12-09-获取成功更改后的文件绝对路径'
+git commit -m 'daily-12-09-使用promise同步化回调函数'
 
 推送到分支
-git push origin daily-12-09-获取成功更改后的文件绝对路径
+git push origin daily-12-09-使用promise同步化回调函数
 
 
 切换主干||分支
 git checkout master     ||    git checkout  daily-10-1
 
 本地合并分支到主干
-git merge daily-12-09-获取成功更改后的文件绝对路径
+git merge daily-12-09-使用promise同步化回调函数
 
 远端合并分支到主干
-git merge origin/daily-12-09-获取成功更改后的文件绝对路径
+git merge origin/daily-12-09-使用promise同步化回调函数
 
 推送主干
 git push origin master
