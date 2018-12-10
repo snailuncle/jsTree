@@ -10,6 +10,56 @@ function renamePromise(oldfile, newfile) {
     });
   });
 }
+
+
+
+
+
+
+
+function parsePostData(ctx) {
+  return new Promise((resolve, reject) => {
+      try {
+          let postData = '';
+          ctx.req.on('data', (data) => { // 有数据传入的时候
+
+              postData += data;
+              console.log("传过来的一小段数据=")
+              console.log(data)
+          });
+          ctx.req.addListener('end', () => {
+
+              let parseData = parseQueryStr(postData);
+
+              console.log("传输所有数据完毕,parseData=")
+              console.log(parseData)
+
+
+
+              resolve(parseData);
+          });
+      } catch (e) {
+          reject(e);
+      }
+  })
+}
+
+// 处理 string => json
+function parseQueryStr(queryStr) {
+  let queryData = {};
+  let queryStrList = queryStr.split('&');
+  console.log('queryStrList',queryStrList);
+  console.log('queryStrList.entries()',queryStrList.entries());
+  for(let [index,queryStr] of queryStrList.entries()){
+      let itemList = queryStr.split('=');
+      console.log('itemList',itemList);
+      queryData[itemList[0]] = decodeURIComponent(itemList[1]);
+  }
+  return queryData;
+}
+
+
+
 var walk = function (dir) {
   var fs = require('fs');
   var results = []
@@ -22,10 +72,12 @@ var walk = function (dir) {
   })
   return results
 }
+
 function copyItSpawn(from, to) {
   var child_process = require('child_process');
   child_process.spawnSync('cp', ['-r', from, to]);
 }
+
 function copyIt(from, to) {
   var fs = require('fs');
   console.log('from=')
@@ -343,9 +395,7 @@ var fn_jstree = async (ctx, next) => {
         ctx.body = 'success copy file to file'
       }
       if (要移动的文件是文件还是文件夹.isDirectory()) {
-
-        copyItSpawn(要移动的文件,要移动到那个文件夹);
-
+        copyItSpawn(要移动的文件, 要移动到那个文件夹);
         // var 文件夹下的所有文件 = walk(要移动的文件)
         // //创建一个父文件夹
         // var parentPath=path.basename(要移动的文件)
@@ -372,32 +422,36 @@ var fn_jstree = async (ctx, next) => {
         ctx.body = 'success copy file to folder'
       }
       if (要移动的文件是文件还是文件夹.isDirectory()) {
-
-        copyItSpawn(要移动的文件,目标文件);
-
-
+        copyItSpawn(要移动的文件, 目标文件);
         // var 文件夹下的所有文件 = walk(要移动的文件)
         // 文件夹下的所有文件.map((file) => {
         //   var 要移动的文件的文件名 = path.basename(file)
         //   copyIt(file, path.join(目标文件, 要移动的文件的文件名))
-
         // })
         ctx.body = 'success copy folder to folder'
       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
+  }
+  if (operation == 'getCodeDetail') {
+    // return ;
+    var filePath = jstreeInfo.filePath
+    console.log("filePath=");
+    console.log(filePath)
+    let path = require('path');
+    var fs = require('fs');
+    var 目标文件 = path.join(__dirname, '../' + filePath)
+    var stats = fs.statSync(目标文件);
+    if (stats.isFile()) {
+      console.log('目标文件是文件')
+      console.log('--------开始读取文件--------');
+      var fs = require('fs');
+      var fileContent = fs.readFileSync(目标文件, 'utf-8');
+      ctx.body = fileContent
+      console.log('--------读取结束--------');
+    };
+    if (stats.isDirectory()) {
+      console.log('目标文件是文件夹')
+      ctx.body = '你选的是文件夹,所以我啥也不显示'
     }
   }
 };
@@ -527,11 +581,68 @@ var fn_hello = async (ctx, next) => {
   var name = ctx.params.name;
   ctx.response.body = `<h1>Hello, ${name}!</h1>`;
 };
+var fn_saveCode = async (ctx, next) => {
+
+
+  console.log('开始获取前端传过来的路径和代码')
+
+  var body=ctx.request.body
+  console.log("-----------ctx.request.body-----");
+  console.log(body);
+
+
+
+
+  var filePath = body.filePath;
+  var codeDetail = body.codeDetail;
+
+
+
+  console.log('filePath=')
+  console.log(filePath)
+  console.log('codeDetail=')
+  console.log(codeDetail)
+
+  let path = require('path');
+
+
+  filePath=path.join(__dirname, '../' + filePath)
+
+  const fs = require("fs");
+
+  // fs.wirteFile有三个参数
+  // 1,第一个参数是要写入的文件路径
+  // 2,第二个参数是要写入得内容
+  // 3,第三个参数是可选参数,表示要写入的文件编码格式,一般就不写,默认就行
+  // 4,第四个参数是个回调函数  只有一个参数error,来判断是否写入成功
+  console.log('filePath=')
+  console.log(filePath)
+  console.log('codeDetail=')
+  console.log(codeDetail)
+  fs.writeFile(filePath, codeDetail, error => {
+    if (error) return console.log("写入文件失败,原因是" + error.message);
+    console.log("写入成功");
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+  ctx.response.body = '保存代码完毕';
+};
 module.exports = {
   'GET /': fn_index,
   'POST /signin': fn_signin,
   'GET /signin': fn_jstree,
   'POST /getDirInfo': fn_getDirInfo,
+  'POST /saveCode': fn_saveCode,
   'GET /hello/:name': fn_hello
 };
 // http://localhost:3000/signin?operation=rename_node&id=j1_1&text=11111 405 (Method Not Allowed)
