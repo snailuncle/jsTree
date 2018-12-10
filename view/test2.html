@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>autoresizing textarea</title>
+  <script src="js/jquery.min.js"></script>
+  <style type="text/css">
+    textarea {
+      border: 1px solid red;
+      overflow: hidden;
+      padding: 0;
+      min-height: 100px;
+      max-height: 300px;
+    }
+  </style>
+</head>
+
+<body onload="init();">
+  <textarea rows="5" style="height:25px;" id="codePanel"></textarea>
+  <script type="text/javascript">
+    var observe;
+    if (window.attachEvent) {
+      observe = function (element, event, handler) {
+        element.attachEvent('on' + event, handler);
+      };
+    } else {
+      observe = function (element, event, handler) {
+        element.addEventListener(event, handler, false);
+      };
+    }
+
+    function init() {
+      var text = document.getElementById('codePanel');
+
+      function resize() {
+        text.style.height = 'auto';
+        text.style.height = text.scrollHeight + 'px';
+      }
+      /* 0-timeout to get the already changed text */
+      function delayedResize() {
+        window.setTimeout(resize, 0);
+      }
+      observe(text, 'change', resize);
+      observe(text, 'cut', delayedResize);
+      observe(text, 'paste', delayedResize);
+      observe(text, 'drop', delayedResize);
+      observe(text, 'keydown', delayedResize);
+      text.focus();
+      text.select();
+      resize();
+    }
+  </script>
+</body>
+
+</html>

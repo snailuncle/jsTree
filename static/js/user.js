@@ -23,7 +23,24 @@ var jstreeID = 'jstree';
     // tree.jstree().settings.core.data = null;
     // tree.jstree().refresh(true,true);
     tree.jstree(true).settings.core.data = json;
+    var rootobj=getNode("#")
+    console.log("rootobj=");
+    console.table(rootobj);
+    console.log("rootobj.children=");
+    console.table(rootobj.children);
+
+    (rootobj.children).map((childID)=>{
+      var nodeobj=getNode(childID)
+      tree.jstree(true).open_node(nodeobj);
+
+    })
+
     tree.jstree(true).refresh();
+
+
+
+
+    // tree.jstree(true).open_all(-1);
     //console.debug("reloaded.");
     });
 
@@ -203,7 +220,7 @@ $(document).ready(function () {
             var 操作的文件=getNode(操作的文件id)
             console.log("操作的文件=")
             console.table(操作的文件)
-            window.aaa=操作的文件
+
             console.log("操作的文件['parents']=")
             console.table(操作的文件["parents"])
 
@@ -341,31 +358,68 @@ $(document).ready(function () {
                 data.instance.refresh();
                 reloadTree()
               })
-              .fail(function () {
+              .fail(function (err) {
+                console.log(err)
                 console.log('移动失败')
                 data.instance.refresh();
               });
           })
           .on('copy_node.jstree', function (e, data) {
-
             console.log("copy_node.jstree");
             console.log("e=");
 
             console.table(e)
             console.log("data=");
             console.table(data)
+            var 从哪里来=data.old_parent
+            var 到哪里去=data.node.parent
+            var text=data.node.text
+            从哪里来=getNode(从哪里来)
+            到哪里去=getNode(到哪里去)
+            console.log("从哪里来=");
+            console.table(从哪里来)
+            console.log("到哪里去=");
+            console.table(到哪里去)
+            var 原始id=data.node.id
+
+
+            从哪里来=getPathFromNode(从哪里来)
+            到哪里去=getPathFromNode(到哪里去)
+
+
+
+
+
+
+            console.log("从哪里来=");
+            console.log(从哪里来)
+            console.log("到哪里去=");
+            console.log(到哪里去)
+
+
+            var fromWhere=从哪里来+"/"+text
+            var toWhere=到哪里去
+
+
+
             $.get('?operation=copy_node', {
-                'id': data.original.id,
-                'parent': data.parent
+                'id': 原始id,
+                'parent': data.parent,
+                'from':fromWhere,
+                'to':toWhere
               })
               .done(function (d) {
+                console.log('复制成功')
                 //data.instance.load_node(data.parent);
                 data.instance.refresh();
+                reloadTree()
               })
               .fail(function () {
+                console.log('复制失败')
                 data.instance.refresh();
               });
           })
+
           .on('select_node.jstree', function (event, data) {
             var ref = $('#' + jstreeID).jstree(true);
             var sel = ref.get_selected();
@@ -378,17 +432,42 @@ $(document).ready(function () {
             // $(".a2").text("你值得拥有");
             console.table(data)
 
+            // $("#script-name").text(data.node);
+            // console.table(data.node)
+            // $("#project-name").text('选中的文件的父目录='+getNode(data.node.parent).text+" id="+data.node.parent);
+            // $("#script-name").text('选中的文件='+data.node.text+" id="+data.node.id);
+
+
             $("#script-name").text(data.node);
             console.table(data.node)
-            $("#project-name").text('选中的文件的父目录='+getNode(data.node.parent).text+" id="+data.node.parent);
-            $("#script-name").text('选中的文件='+data.node.text+" id="+data.node.id);
+
+
+            var get_path_result=ref.get_path (data.node,"/")
+            console.log("get_path_result=")
+            console.log(get_path_result)
+            $("#project-name").text('选中的文件的路径='+get_path_result);
+
+            $("#script-name").text('选中的文件='+data.node.text);
+
+            //后台获取文件内容
+            var 选中的文件的内容='选中的文件的内容'+data.node.text
+
+            $("#script-detail").text(选中的文件的内容);
+
+
+
+
+
+
+
+
             var children=data.node.children
             var childrenName=''
             for(let i=0;i<children.length;i++){
               childrenName+="\n"+getNode(children[i]).text
             }
 
-            $("#script-detail").text('选中的文件的子目录='+childrenName);
+            // $("#script-detail").text('选中的文件的子目录='+childrenName);
           })
       });
     });

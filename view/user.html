@@ -12,10 +12,24 @@
   <link rel="stylesheet" href="../dist/themes/default/style.min.css" />
   <script src="../dist/jstree.min.js"></script>
   <script src="../static/js/user.js"></script>
+  <style>
+    textarea.sansserif {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 100%;
+    }
+
+    textarea.ex {
+      color: rgb(0, 0, 255);
+    }
+
+    textarea.wh {
+      width: 100%;
+    }
+  </style>
 </head>
 <!-- 传递给网页一个数组,数组中是文件夹和文件,用json格式存放 -->
 
-<body>
+<body onload="init();">
   <h1>欢迎光临{{user}}</h1>
   <div class="container">
     <div class="row clearfix">
@@ -37,9 +51,11 @@
         <h3 id="script-name">
           这里放选中的脚本的名字
         </h3>
-        <p id="script-detail">
-          这里放选中的脚本的具体代码
-        </p>
+        <div>
+          <textarea class="sansserif ex wh" id="script-detail">
+            123 123 444 555 666
+          </textarea>
+        </div>
       </div>
       <div class="col-md-1 column">
         <div class="btn-group btn-group-vertical btn-group-lg">
@@ -54,6 +70,39 @@
       </div>
     </div>
   </div>
+  <script type="text/javascript">
+    var observe;
+    if (window.attachEvent) {
+      observe = function (element, event, handler) {
+        element.attachEvent('on' + event, handler);
+      };
+    } else {
+      observe = function (element, event, handler) {
+        element.addEventListener(event, handler, false);
+      };
+    }
+
+    function init() {
+      var text = document.getElementById('script-detail');
+
+      function resize() {
+        text.style.height = 'auto';
+        text.style.height = text.scrollHeight + 'px';
+      }
+      /* 0-timeout to get the already changed text */
+      function delayedResize() {
+        window.setTimeout(resize, 0);
+      }
+      observe(text, 'change', resize);
+      observe(text, 'cut', delayedResize);
+      observe(text, 'paste', delayedResize);
+      observe(text, 'drop', delayedResize);
+      observe(text, 'keydown', delayedResize);
+      text.focus();
+      text.select();
+      resize();
+    }
+  </script>
 </body>
 
 </html>

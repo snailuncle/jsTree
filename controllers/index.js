@@ -1,9 +1,7 @@
-function renamePromise(oldfile,newfile)
-{
+function renamePromise(oldfile, newfile) {
   var fs = require('fs');
-
   return new Promise(function (resolve, reject) {
-    fs.rename(oldfile, newfile, function(err,data){
+    fs.rename(oldfile, newfile, function (err, data) {
       if (err) {
         reject(err);
       } else {
@@ -12,26 +10,41 @@ function renamePromise(oldfile,newfile)
     });
   });
 }
+var walk = function (dir) {
+  var fs = require('fs');
+  var results = []
+  var list = fs.readdirSync(dir)
+  list.forEach(function (file) {
+    file = dir + '/' + file
+    var stat = fs.statSync(file)
+    if (stat && stat.isDirectory()) results = results.concat(walk(file))
+    else results.push(file)
+  })
+  return results
+}
+function copyItSpawn(from, to) {
+  var child_process = require('child_process');
+  child_process.spawnSync('cp', ['-r', from, to]);
+}
+function copyIt(from, to) {
+  var fs = require('fs');
+  console.log('from=')
+  console.log(from)
+  console.log('to=')
+  console.log(to)
+  fs.writeFileSync(to, fs.readFileSync(from));
+  //fs.createReadStream(src).pipe(fs.createWriteStream(dst));大文件复制
+}
 
 function createFolder(filePath) {
   var fs = require('fs');
   console.log("创建目录 " + filePath);
-  fs.mkdir(filePath, function (err) {
-    if (err) {
-      return console.error(err);
-    }
-    console.log("目录创建成功。" + filePath);
-  });
+  fs.mkdirSync(filePath);
 }
 
 function createFile(filePath) {
   var fs = require('fs');
-  fs.writeFile(filePath, "", function (err) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("文件创建成功。!" + filePath);
-  });
+  fs.writeFileSync(filePath, "");
 }
 
 function createFolderOrFile(icon, filePath) {
@@ -157,16 +170,9 @@ var fn_jstree = async (ctx, next) => {
         //创建文件(夹)
         var 选中的文件路径 = 新绝对路径
         console.log("选中的文件路径=" + 选中的文件路径)
-        let stats = fs.statSync(选中的文件路径);
         // "folder"
         // "file"
-        createFolderOrFile(icon, filePath)
-        if (stats.isFile()) {
-          //是文件就在文件同层级别新建文件或者文件夹
-          let join = require('path').join;
-          let filePath = join(选中的文件路径, "../" + 文件名称);
-          createFolderOrFile(icon, filePath)
-        };   
+        createFolderOrFile(icon, 选中的文件路径) 
       } 
     })
   }
@@ -252,11 +258,9 @@ var fn_jstree = async (ctx, next) => {
     }
   }
   if (operation == 'move_node') {
-    ctx.response.body="success file"
-
-    var 从哪里来=jstreeInfo.from
-    var 到哪里去=jstreeInfo.to
-    var id=jstreeInfo.id
+    var 从哪里来 = jstreeInfo.from
+    var 到哪里去 = jstreeInfo.to
+    var id = jstreeInfo.id
     console.log('后端接收的参数 move_node')
     console.log("从哪里来=");
     console.log(从哪里来)
@@ -271,30 +275,15 @@ var fn_jstree = async (ctx, next) => {
     var fs = require('fs');
     var 目标文件 = path.join(__dirname, '../' + 到哪里去)
     stats = fs.statSync(目标文件);
-    var 要移动的文件=path.join(__dirname, '../' + 从哪里来)
-    var 要移动的文件的文件名=path.basename(要移动的文件)
+    var 要移动的文件 = path.join(__dirname, '../' + 从哪里来)
+    var 要移动的文件的文件名 = path.basename(要移动的文件)
     if (stats.isFile()) {
       //移动文件到目标文件的同级目录
       console.log('目标文件是文件')
-      var 要移动到那个文件夹=path.resolve(目标文件, '..');
-
-
-// 这是通用函数，异步读文件
-
-
-      renamePromise(要移动的文件,path.join(要移动到那个文件夹,要移动的文件的文件名))
-      .then(function (info){
-        console.log(info);
-        ctx.response.body="success move file"
-
-      }
-      ).catch( function (err) {
-        console.log(err);
-      });
-
-
-
-
+      var 要移动到那个文件夹 = path.resolve(目标文件, '..');
+      // 这是通用函数，异步读文件
+      fs.renameSync(要移动的文件, path.join(要移动到那个文件夹, 要移动的文件的文件名))
+      ctx.response.body = "success move file"
       // fs.rename(要移动的文件,path.join(要移动到那个文件夹,要移动的文件的文件名), function(err){
       //   if(err){
       //    throw err;
@@ -302,7 +291,6 @@ var fn_jstree = async (ctx, next) => {
       //   console.log('移动文件done!');
       //   console.log('oldpath=')
       //   console.log(要移动的文件)
-
       //   console.log('newpath=')
       //   console.log(path.join(要移动到那个文件夹,要移动的文件的文件名))
       //   ctx.response.body="success file"
@@ -311,50 +299,106 @@ var fn_jstree = async (ctx, next) => {
       //   //   "id":id
       //   // }
       //  })
-
-
-
-
     };
     if (stats.isDirectory()) {
       console.log('目标文件是文件夹')
-
-
-      renamePromise(要移动的文件,path.join(目标文件,要移动的文件的文件名))
-      .then(function (info){
-        console.log(info);
-        ctx.response.body="success move folder"
-
-      }
-      ).catch( function (err) {
-        console.log(err);
-      });
-
-
-
-      // // 移动文件到文件夹里面
-      // fs.rename(要移动的文件,path.join(目标文件,要移动的文件的文件名), function(err){
-      //   if(err){
-      //    throw err;
-      //   }
-      //   console.log('移动文件done!');
-      //   console.log('oldpath=')
-      //   console.log(要移动的文件)
-
-      //   console.log('newpath=')
-      //   console.log(path.join(目标文件,要移动的文件的文件名))
-      //   ctx.response.body="success dir"
-      //   // ctx.body = {
-      //   //   "info": "move file done",
-      //   //   "id":id
-      //   // }
-      //   console.log("ctx.body=")
-      //   console.log(ctx.body)
-      //   console.table(ctx.body)
-      //  })
+      fs.renameSync(要移动的文件, path.join(目标文件, 要移动的文件的文件名))
+      ctx.response.body = "success move folder"
+      // renamePromise(要移动的文件, path.join(目标文件, 要移动的文件的文件名))
+      //   .then(function (info) {
+      //     console.log(info);
+      //     ctx.response.body = "success move folder"
+      //   }).catch(function (err) {
+      //     console.log(err);
+      //   });
     }
+  }
+  if (operation == 'copy_node') {
+    // return ;
+    var 从哪里来 = jstreeInfo.from
+    var 到哪里去 = jstreeInfo.to
+    var id = jstreeInfo.id
+    console.log('后端接收的参数 move_node')
+    console.log("从哪里来=");
+    console.log(从哪里来)
+    console.log("到哪里去=");
+    console.log(到哪里去)
+    // 从哪里来=
+    // projectList/33333/6666
+    // 到哪里去=
+    // projectList/33333
+    //移动文件到指定文件(夹)
+    let path = require('path');
+    var fs = require('fs');
+    var 目标文件 = path.join(__dirname, '../' + 到哪里去)
+    var stats = fs.statSync(目标文件);
+    var 要移动的文件 = path.join(__dirname, '../' + 从哪里来)
+    var 要移动的文件的文件名 = path.basename(要移动的文件)
+    var 要移动的文件是文件还是文件夹 = fs.statSync(要移动的文件);
+    if (stats.isFile()) {
+      console.log('目标文件是文件')
+      var 要移动到那个文件夹 = path.resolve(目标文件, '..');
+      if (要移动的文件是文件还是文件夹.isFile()) {
+        copyIt(要移动的文件, path.join(要移动到那个文件夹, 要移动的文件的文件名));
+        ctx.body = 'success copy file to file'
+      }
+      if (要移动的文件是文件还是文件夹.isDirectory()) {
+
+        copyItSpawn(要移动的文件,要移动到那个文件夹);
+
+        // var 文件夹下的所有文件 = walk(要移动的文件)
+        // //创建一个父文件夹
+        // var parentPath=path.basename(要移动的文件)
+        // createFolder(path.join(要移动到那个文件夹, parentPath))
+        // //添加原本的父文件夹名字
+        // 文件夹下的所有文件.map((file) => {
+        //   var 要移动的文件的文件名 = path.basename(file)
+        //   copyIt(file, path.join(要移动到那个文件夹, 要移动的文件的文件名));
+        // })
+        ctx.body = 'success copy folder to file'
+      }
+      // //移动文件到目标文件的同级目录
+      // console.log('目标文件是文件')
+      // var 要移动到那个文件夹 = path.resolve(目标文件, '..');
+      // // 这是通用函数，异步读文件
+      // fs.renameSync(要移动的文件, path.join(要移动到那个文件夹, 要移动的文件的文件名))
+      //     ctx.response.body = "success move file"
+    };
+    if (stats.isDirectory()) {
+      console.log('目标文件是文件夹')
+      if (要移动的文件是文件还是文件夹.isFile()) {
+        copyIt(要移动的文件, path.join(目标文件, 要移动的文件的文件名))
+        ctx.response.body = "success copy folder"
+        ctx.body = 'success copy file to folder'
+      }
+      if (要移动的文件是文件还是文件夹.isDirectory()) {
+
+        copyItSpawn(要移动的文件,目标文件);
 
 
+        // var 文件夹下的所有文件 = walk(要移动的文件)
+        // 文件夹下的所有文件.map((file) => {
+        //   var 要移动的文件的文件名 = path.basename(file)
+        //   copyIt(file, path.join(目标文件, 要移动的文件的文件名))
+
+        // })
+        ctx.body = 'success copy folder to folder'
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
   }
 };
 var fn_signin = async (ctx, next) => {

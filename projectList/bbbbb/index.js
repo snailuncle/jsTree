@@ -1,3 +1,3 @@
-var message='script01.js'
+var message='test_index.js'
 toastLog(message)
 alert(message)

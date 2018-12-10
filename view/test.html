@@ -1,0 +1,64 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>666666</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/twitter-bootstrap/4.1.2/css/bootstrap.min.css" />
+  <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.2/js/bootstrap.min.js"></script>
+  <style>
+    textarea.sansserif{font-family:Arial,Helvetica,sans-serif; font-size:100%;}
+    textarea.ex {color:rgb(0,0,255);}
+    textarea.wh {width:100%;}
+  </style>
+</head>
+
+<body onload="init();">
+
+  <div>
+    <textarea class="sansserif ex wh" id="codePanel">
+      123
+      123
+      444
+      555
+      666
+    </textarea>
+  </div>
+  <script type="text/javascript">
+    var observe;
+    if (window.attachEvent) {
+      observe = function (element, event, handler) {
+        element.attachEvent('on' + event, handler);
+      };
+    } else {
+      observe = function (element, event, handler) {
+        element.addEventListener(event, handler, false);
+      };
+    }
+
+    function init() {
+      var text = document.getElementById('codePanel');
+
+      function resize() {
+        text.style.height = 'auto';
+        text.style.height = text.scrollHeight + 'px';
+      }
+      /* 0-timeout to get the already changed text */
+      function delayedResize() {
+        window.setTimeout(resize, 0);
+      }
+      observe(text, 'change', resize);
+      observe(text, 'cut', delayedResize);
+      observe(text, 'paste', delayedResize);
+      observe(text, 'drop', delayedResize);
+      observe(text, 'keydown', delayedResize);
+      text.focus();
+      text.select();
+      resize();
+    }
+  </script>
+</body>
+
+</html>

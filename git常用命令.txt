@@ -10,26 +10,26 @@ git status -s
 git branch
 
 创建分支
-git checkout master -b daily-12-09-使用promise同步化回调函数
+git checkout master -b daily-12-10-代码编辑区域自适应宽高
 
 提交到暂存区
 git add .
 
 提交评论
-git commit -m 'daily-12-09-使用promise同步化回调函数'
+git commit -m 'daily-12-10-代码编辑区域自适应宽高'
 
 推送到分支
-git push origin daily-12-09-使用promise同步化回调函数
+git push origin daily-12-10-代码编辑区域自适应宽高
 
 
 切换主干||分支
 git checkout master     ||    git checkout  daily-10-1
 
 本地合并分支到主干
-git merge daily-12-09-使用promise同步化回调函数
+git merge daily-12-10-代码编辑区域自适应宽高
 
 远端合并分支到主干
-git merge origin/daily-12-09-使用promise同步化回调函数
+git merge origin/daily-12-10-代码编辑区域自适应宽高
 
 推送主干
 git push origin master
