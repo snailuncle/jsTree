@@ -11,55 +11,39 @@ function renamePromise(oldfile, newfile) {
   });
 }
 
-
-
-
-
-
-
 function parsePostData(ctx) {
   return new Promise((resolve, reject) => {
-      try {
-          let postData = '';
-          ctx.req.on('data', (data) => { // 有数据传入的时候
-
-              postData += data;
-              console.log("传过来的一小段数据=")
-              console.log(data)
-          });
-          ctx.req.addListener('end', () => {
-
-              let parseData = parseQueryStr(postData);
-
-              console.log("传输所有数据完毕,parseData=")
-              console.log(parseData)
-
-
-
-              resolve(parseData);
-          });
-      } catch (e) {
-          reject(e);
-      }
+    try {
+      let postData = '';
+      ctx.req.on('data', (data) => { // 有数据传入的时候
+        postData += data;
+        console.log("传过来的一小段数据=")
+        console.log(data)
+      });
+      ctx.req.addListener('end', () => {
+        let parseData = parseQueryStr(postData);
+        console.log("传输所有数据完毕,parseData=")
+        console.log(parseData)
+        resolve(parseData);
+      });
+    } catch (e) {
+      reject(e);
+    }
   })
 }
-
 // 处理 string => json
 function parseQueryStr(queryStr) {
   let queryData = {};
   let queryStrList = queryStr.split('&');
-  console.log('queryStrList',queryStrList);
-  console.log('queryStrList.entries()',queryStrList.entries());
-  for(let [index,queryStr] of queryStrList.entries()){
-      let itemList = queryStr.split('=');
-      console.log('itemList',itemList);
-      queryData[itemList[0]] = decodeURIComponent(itemList[1]);
+  console.log('queryStrList', queryStrList);
+  console.log('queryStrList.entries()', queryStrList.entries());
+  for (let [index, queryStr] of queryStrList.entries()) {
+    let itemList = queryStr.split('=');
+    console.log('itemList', itemList);
+    queryData[itemList[0]] = decodeURIComponent(itemList[1]);
   }
   return queryData;
 }
-
-
-
 var walk = function (dir) {
   var fs = require('fs');
   var results = []
@@ -582,34 +566,19 @@ var fn_hello = async (ctx, next) => {
   ctx.response.body = `<h1>Hello, ${name}!</h1>`;
 };
 var fn_saveCode = async (ctx, next) => {
-
-
   console.log('开始获取前端传过来的路径和代码')
-
-  var body=ctx.request.body
+  var body = ctx.request.body
   console.log("-----------ctx.request.body-----");
   console.log(body);
-
-
-
-
   var filePath = body.filePath;
   var codeDetail = body.codeDetail;
-
-
-
   console.log('filePath=')
   console.log(filePath)
   console.log('codeDetail=')
   console.log(codeDetail)
-
   let path = require('path');
-
-
-  filePath=path.join(__dirname, '../' + filePath)
-
+  filePath = path.join(__dirname, '../' + filePath)
   const fs = require("fs");
-
   // fs.wirteFile有三个参数
   // 1,第一个参数是要写入的文件路径
   // 2,第二个参数是要写入得内容
@@ -623,26 +592,20 @@ var fn_saveCode = async (ctx, next) => {
     if (error) return console.log("写入文件失败,原因是" + error.message);
     console.log("写入成功");
   });
-
-
-
-
-
-
-
-
-
-
-
-
   ctx.response.body = '保存代码完毕';
 };
+var fn_getPort = async (ctx, next) => {
+  var result = require('../config.json');
+  ctx.response.body = result;
+};
+
 module.exports = {
   'GET /': fn_index,
   'POST /signin': fn_signin,
   'GET /signin': fn_jstree,
   'POST /getDirInfo': fn_getDirInfo,
   'POST /saveCode': fn_saveCode,
-  'GET /hello/:name': fn_hello
+  'GET /hello/:name': fn_hello,
+  'GET /getPort': fn_getPort,
 };
 // http://localhost:3000/signin?operation=rename_node&id=j1_1&text=11111 405 (Method Not Allowed)

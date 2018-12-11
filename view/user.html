@@ -35,23 +35,28 @@
       padding-bottom: 6px;
       padding-left: 12px;
     }
+
     #button_edit {
-      width:200px;
-      height:88px;
+      width: 200px;
+      height: 88px;
     }
+
     #button_save {
-      width:200px;
-      height:88px;
+      width: 200px;
+      height: 88px;
     }
+
     #button_index {
-      width:200px;
-      height:88px;
+      width: 200px;
+      height: 88px;
     }
+
     #project_list {
       position: relative;
       left: 20px;
       top: 10px;
     }
+
     /* #codeDetail {
 
       background-color: green;
@@ -101,8 +106,10 @@
         <div class="btn-group btn-group-vertical btn-group-lg ">
           <button type="button" class="btn btn-default btn-danger" id="button_edit">编辑</button>
           <button type="button" class="btn btn-default btn-info" id="button_save">保存</button>
-          <button type="button" class="btn btn-default btn-success" id="button_index" >运行当前项目的<br/>入口文件index.js</button>
+          <button type="button" class="btn btn-default btn-success" id="button_index">运行当前项目的
+            <br/>入口文件index.js</button>
         </div>
+        <p id=connectionState></p>
         <!-- <div class="col-md-* col-sm-* col-xs-*" style="text-align:right;">
           <input type="text" value="" style="box-shadow:inset 0 0 4px #eee; margin:0; padding:6px 12px; border-radius:4px; border:1px solid silver; font-size:1.1em;"
             id="demo_q" placeholder="Search" />
@@ -141,7 +148,13 @@
       });
     })
     $("#button_index").click(function (event) {
-      alert('index.js666')
+      // alert('index.js666')
+      $("#connectionState").text('正在连接手机,请稍后');
+      $.get("runIndex", function (result) {
+        $("#connectionState").text(result);
+
+      });
+
     })
   </script>
   <script type="text/javascript">
@@ -182,6 +195,63 @@
     //     alert($("#script-detail").val());//弹出textarea的值
     // });
   </script>
+
+
+  <script type="text/javascript">
+    $("#button_index").click(function (event) {
+
+
+
+      // 很重要 必须写，判断浏览器是否支持websocket
+      var CreateWebSocket = (function () {
+        return function (urlValue) {
+          if (window.WebSocket) return new WebSocket(urlValue);
+          if (window.MozWebSocket) return new MozWebSocket(urlValue);
+          return false;
+        }
+      })()
+      // 实例化websoscket websocket有两种协议ws(不加密)和wss(加密)
+      var wsport = '3000'
+      var webSocket = null
+      $.get("getPort", function (result) {
+        console.log('从后端获取的端口信息结果=')
+        console.log(result)
+        wsport=result.httpPort
+        console.log('选择的ws端口=')
+        console.log(wsport)
+
+        webSocket = CreateWebSocket("ws://127.0.0.1:" + wsport + "/ws");
+        webSocket.onopen = function (evt) {
+          // 一旦连接成功，就发送第一条数据
+          webSocket.send("前端网页发送的第一条数据")
+        }
+        webSocket.onmessage = function (evt) {
+          // 这是服务端返回的数据
+          console.log("服务端说" + evt.data)
+          $("#connectionState").text(evt.data);
+
+        }
+        // 关闭连接
+        webSocket.onclose = function (evt) {
+          console.log("Connection closed.")
+        }
+
+      });
+
+
+
+
+
+
+
+
+
+
+    })
+  </script>
+
+
+
 </body>
 
 </html>
