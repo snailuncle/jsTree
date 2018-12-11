@@ -1,20 +1,38 @@
-// 基于koa-websocket实现的即时通讯
-// 把下面的这个几个模块安装一下
-// 这只是功能模块完成，后期肯定要连接数据库保存数据
-const Koa = require('koa')
-// 路由
-const route = require('koa-route')
-// koa封装的websocket这是官网（很简单有时间去看一下https://www.npmjs.com/package/koa-websocket）
-const websockify = require('koa-websocket')
-const app = websockify(new Koa());
-app.ws.use(function (ctx, next) {
-  return next(ctx)
-})
-app.ws.use(route.all('/', function (ctx) {
-  ctx.websocket.on('message', function (message) {
-    console.log('收到前端发来的消息'+message)
-    ctx.websocket.send(message)
-  })
-}))
-app.listen(3333)
-// 会默认打开127.0.0.1:3000这个端口号
+var net=require("net");
+
+/**
+ * 创建server
+ */
+function t1(){
+    var server=net.createServer(function(socket){
+        //socket.end("good bye!");
+        socket.write("hello,i'm server!");
+        console.log("client connected! %j:%j",socket.remoteAddress,socket.remotePort);
+        socket.on("data",function(data){
+            console.log("recived from client:",data.toString());
+        })
+        socket.on("close",function(had_error){
+            if(!had_error){
+                console.log("client closed success! %j:%j",socket.remoteAddress,socket.remotePort);
+            }
+            else{
+                console.log("client close error! %j:%j",socket.remoteAddress,socket.remotePort);
+            }
+        })
+        socket.on("error",function(err){
+            console.log("!!!err!!!",err);
+        });
+        //setTimeout(function(){
+        //    socket.end("我结束了","utf8");
+        //},3000);
+    });
+    server.listen({
+        port:8811
+    },function(){
+        var address=server.address();
+        console.log(" opened server on address %j ",address);
+    });
+
+    var a=1;
+}
+t1();

@@ -23,36 +23,8 @@ function getTime() {
   return ((new Date()).Format("yyyy-MM-dd hh:mm:ss"));
   // 2018-08-02 21:22:07
 }
-
-
-// 1 引入模块
-const net = require('net');
-// 2 创建服务器
-let clientArr = [];
-const server = net.createServer();
-// 3 绑定链接事件
-server.on('connection', (person) => {
-  console.log(clientArr.length);
-  // 记录链接的进程
-  person.id = clientArr.length;
-  clientArr.push(person);
-  person.setEncoding('utf8');
-  // 客户socket进程绑定事件
-  person.on('data', (chunk) => {
-    var msg=getTime() + "从客户端接收到消息->" + chunk +"\r\n"
-    person.write(msg);
-
-    console.log(msg);
-    clientArr.forEach((val) => {
-      // 数据写入全部客户进程中
-      val.write(msg);
-    })
-  })
-  person.on('close', (p1) => {
-    clientArr[p1.id] = null;
-  })
-  person.on('error', (p1) => {
-    clientArr[p1.id] = null;
-  })
-})
-server.listen(8811);
+module.exports = {
+  "serverIP": "888.888.888.888",
+  "port": "8811",
+  "getTime": getTime
+}
