@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>socket.io演示客户端</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+</head>
+<body>
+<h1>socket.io演示客户端</h1>
+<input type="text" placeholder="设置房间号" id="roomId"><button>确定</button>
+<input type="text" placeholder="发送消息" id="msg">
+<input type="text" placeholder="发送给" id="toRoomId"><button id="sayTo">确定</button>
+<div id="word">
+
+</div>
+</body>
+<script>
+    $=function (id) {
+        return document.getElementById(id);
+    };
+    var socket = io.connect('127.0.0.1:3123');
+    var setRoom = document.getElementsByTagName("button")[0],
+        sayTo = document.getElementsByTagName("button")[1],
+    msg = $("msg"),
+    word = $("word"),
+    toRoom=$("toRoomId");
+    setRoom.onclick=function(){
+        socket.emit('setRoom',{"roomId":$("roomId").value}) ;
+    };
+    sayTo.onclick=function () {
+        var toMsg=msg.value;
+        socket.emit("sayTo",{"to":toRoom.value,"msg":toMsg});
+    };
+    // 当收到对方发来的数据后触发 message 事件
+    socket.on('message',function (data) {
+        word.innerHTML+="<p>"+data+"</p>";
+    });
+</script>
+</html>

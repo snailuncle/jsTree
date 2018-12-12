@@ -8,7 +8,6 @@ const controller = require('./controller');
 const router = require('koa-router')();
 //websocket要导入的包
 const route = require('koa-route')
-const websockify = require('koa-websocket')
 const jstreeapi = require('./router/jstreeapi.js')
 const user = require('./router/admin/user.js')
 var app = new Koa();
@@ -57,35 +56,101 @@ app.use(controller());
 router.use('/jstreeapi', jstreeapi)
 router.use('/user', user)
 // 'GET /runIndex': fn_runIndex
-app = websockify(app);
-app.ws.use(function (ctx, next) {
-  return next(ctx)
+
+
+var net = require("net");
+var config = require('./config')
+/**
+ * 创建server
+ */
+
+var server = net.createServer(function (socket) {
+  var t = config.getTime()
+  socket.write(t + "hello,i'm nodejs!"+"\r\n");
+  console.log(t + "client connected! %j:%j", socket.remoteAddress, socket.remotePort);
+  socket.on("data", function (data) {
+    var t = config.getTime()
+    console.log(t + "recived from autojs:", data.toString());
+    socket.write(t + "这是来自nodejs的数据->海贼王啥时候完结??"+"\r\n");
+  })
+  socket.on("close", function (had_error) {
+    if (!had_error) {
+      console.log("client closed success! %j:%j", socket.remoteAddress, socket.remotePort);
+    } else {
+      console.log("client close error! %j:%j", socket.remoteAddress, socket.remotePort);
+    }
+  })
+  socket.on("error", function (err) {
+    console.log("!!!err!!!", err);
+  });
+  //setTimeout(function(){
+  //    socket.end("我结束了","utf8");
+  //},3000);
+});
+server.listen({
+  port: config.port
+}, function () {
+  var t = config.getTime()
+  var address = server.address();
+  console.log(t + " opened server on address %j ", address);
+});
+
+
+
+router.get('/runIndex/:projectName',async (ctx,next) => {
+  console.log('要运行的项目名称=')
+  var projectName = ctx.params.projectName;
+  console.log(projectName)
+  ctx.response.body = `后端收到runIndex命令`;
+
+  //将指定项目压缩
+  var folder='./projectList/'+projectName
+  var zipFilePath=zipFolder(folder)
+  //告诉手机下载指定项目的压缩包
+  tellMobileDownloadProjectZipFile(zipFilePath)
+  //下载完毕手机自动运行该项目中的index.js
+
+
+
+
 })
+function zipFolder(folder){
+  var zip=require('./zipFolder/zipFolder.js')
+  console.log("zip=")
+  console.log(zip)
+  var zipFilePath=zip.zipFolder(folder)
+  return './'+zipFilePath
+}
 
 
+function tellMobileDownloadProjectZipFile(zipFilePath){
+  var t = config.getTime()
 
-router.get('/runIndex',async (ctx,next) => {
-  ctx.response.body = `请稍后...`;
-  app.ws.use(route.all('/', function (ctx, next) {
-    ctx.websocket.on('message', function (message_Mobile) {
-      console.log('服务器收到的手机的websocket消息=')
-      console.log(message_Mobile)
-      var message = "please run index.js"
-      ctx.websocket.send(message + "手机说"+message_Mobile)
-      if (message_Mobile == 'runIndexStart_OK') {
-        ctx.websocket.send('收到手机运行indexOK的消息')
-      }
+  socket.write(t + "hello,i'm nodejs!"+"\r\n");
+  socket.write(t + "please download zipFile!"+"\r\n");
+  socket.write(t + "zipFilePathIs"+zipFilePath+"\r\n");
 
-    })
-    return next(ctx)
-  }))
-
-  return next();
-})
+}
 
 
+// router.get('/runIndex',async (ctx,next) => {
+//   ctx.response.body = `后端收到runIndex命令`;
+//   app.ws.use(route.all('/', function (ctx, next) {
+//     ctx.websocket.on('message', function (message_Mobile) {
+//       console.log('服务器收到的手机的websocket消息=')
+//       console.log(message_Mobile)
+//       var message = "please run index.js"
+//       ctx.websocket.send(message + "手机说"+message_Mobile)
+//       if (message_Mobile == 'runIndexStart_OK') {
+//         ctx.websocket.send('收到手机运行indexOK的消息')
+//       }
 
+//     })
+//     return next(ctx)
+//   }))
 
+//   return next();
+// })
 
 
 

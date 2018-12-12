@@ -147,15 +147,44 @@
         success: function (data) {}
       });
     })
+
+
+
+
     $("#button_index").click(function (event) {
       // alert('index.js666')
-      $("#connectionState").text('正在连接手机,请稍后');
-      $.get("runIndex", function (result) {
-        $("#connectionState").text(result);
+      // $("#connectionState").text('正在连接手机,请稍后');
+      var filePath = $("#project-name").text()
+      console.log(filePath)
+      filePath = filePath.replace("选中的文件的路径=", "")
+      var arr = filePath.split("/");
+      var projectName=arr[1]
+      $.get("runIndex"+"/"+projectName);
 
-      });
+			var btn = document.getElementById('button_index');//首先需要获取的是哪一个按钮的id
+			btn.disabled = 'disabled';//只要点击就将按钮的可点击的状态更改为不可以点击的状态
+			setTimeout(function(){//设置时间，多久可以改变状态为可以点击
+				btn.disabled = '';
+			},8000);//6秒内不可以重复点击，一秒等于1000毫秒
+
+
+
+
+
+
+
+
+
+
+
 
     })
+
+
+
+
+
+
   </script>
   <script type="text/javascript">
     var observe;
@@ -197,7 +226,12 @@
   </script>
 
 
-  <script type="text/javascript">
+  <!-- <script type="text/javascript">
+    $("#button_index").click(function (event) {
+      $.get("sendCommandToMobile");
+    })
+  </script> -->
+  <!-- <script type="text/javascript">
     $("#button_index").click(function (event) {
 
 
@@ -248,7 +282,7 @@
 
 
     })
-  </script>
+  </script> -->
 
 
 
