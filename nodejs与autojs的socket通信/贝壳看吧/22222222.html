@@ -1,0 +1,81 @@
+<!-- javascript 动态画心 -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>测试</title>
+        <style>
+        canvas{
+            background: lawngreen;//画布背景色
+              }
+        </style>
+    </head>
+<body>
+    <canvas id="gycanvas" width="300" height="300" ></canvas>
+    <script>
+       //铺满屏幕
+        var width = document.documentElement.clientWidth;
+        var height = document.documentElement.clientHeight;
+        document.getElementById("gycanvas").setAttribute("width",width);
+        document.getElementById("gycanvas").setAttribute("height",height);
+
+        //初始化
+        var x0 = width/2;
+        var y0 = height/2;
+        var context = document.getElementById("gycanvas").getContext("2d");
+        context.fillStyle = "red"; 　
+        var x,y;
+
+		//存储要画的点的位置和数量
+        var px=new Array(6000);
+		var py=new Array(6000);
+		//左边的点存3000 右边的点从3001开始存
+		var i=0;
+        var j=3001;
+
+        //将  心  的坐标存入数组中
+        for(var t=-3; t<=3; t=t+0.001)
+        {
+			//坐标系的 x,y
+            x=16*Math.pow(Math.sin(t),3);
+            y=13*Math.cos(t)-5*Math.cos(t*2)-2*Math.cos(t*3)-Math.cos(t*4);
+            //增大心
+            x=x*16;
+            y=y*16;
+			//算出对于计算机的坐标 计算机左上角是0,0
+			x=x0+x;
+			y=y0-y;
+			//存入数组
+			if(x<x0)
+			{
+				px[i]=x;
+				py[i]=y;
+				i=i+1;
+			}
+			if(x>x0)
+			{
+                px[j]=x;
+				py[j]=y;
+				j=j+1;
+			}
+			//x等于0的点就无视了 不影响大局
+        }
+		//画点
+		var stop;
+		var xin=0;
+        function drawxin()
+		{
+			context.fillRect(px[xin],py[xin],1,1);
+			xin=xin+1;
+			if(xin==6000)
+			{
+				//停止画心
+                clearInterval(stop);
+			}
+		}
+		//每十毫秒画一次
+        stop=setInterval(drawxin,1);
+    </script>
+</body>
+
+</html>

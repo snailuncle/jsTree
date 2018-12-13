@@ -1,3 +1,6 @@
+console.log('运行server.js')
+
+
 var net = require("net");
 var config = require('./config')
 /**
@@ -21,7 +24,7 @@ function recordClientInfo(client){
       //写入文件
       var content = {}
       var 唯一标识码=client.唯一标识码
-      content.唯一标识码=client
+      content[唯一标识码]=client
 
       var content = JSON.stringify(content);
       fs.writeFile(file, content, function(err) {
@@ -71,7 +74,15 @@ function t1() {
     var t = config.getTime()
     socket.write(t + "hello,i'm nodejs! giveMeMobileInfo"+"\r\n");
     console.log(t + "client connected! %j:%j", socket.remoteAddress, socket.remotePort);
+
+    socket.on("customEvent", function (msg) {
+      console.log('Received customEvent->'+msg);
+    });
+    socket.emit('customEvent','与on同级别 socket emit customEvent')
+
     socket.on("data", function (data) {
+      socket.emit('customEvent','data事件内部 socket emit customEvent')
+
       var t = config.getTime()
       var mobileInfo=''
       if((data.toString()).indexOf('thisIsMobileInfo') != -1){
@@ -113,6 +124,7 @@ function t1() {
     socket.on("error", function (err) {
       console.log("!!!err!!!", err);
     });
+
     //setTimeout(function(){
     //    socket.end("我结束了","utf8");
     //},3000);
@@ -126,3 +138,21 @@ function t1() {
   });
 }
 t1();
+
+
+
+process.on('message', (msg) => {
+  console.log('大头儿子收到小头爸爸发来的的消息->'+msg)
+  process.send(`\n小头爸爸,我收到你的消息了,剩下的事情交给我了\n`);
+  // process.send(`\nhello parent\n`);
+  // process.send('[worker] worker received!');
+  命令所有手机更新指定项目的脚本()
+});
+
+function 命令所有手机更新指定项目的脚本(){
+  for(let i=0;i<所有的手机.length;i++){
+    var socket=所有的手机[i]
+    socket.write("都起床,小头爸爸说,得更新脚本啦");
+  }
+
+}
