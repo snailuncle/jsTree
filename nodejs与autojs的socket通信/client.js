@@ -58,6 +58,17 @@ function 与服务器socket通信() {
           bw.write('iHadRunScript' + "\r\n"); //加上分行符，以便服务器按行读取
           bw.flush()
         }
+        if (a.indexOf("项目更新信息") != -1) {
+          log('服务器发给客户端脚本更新信息=->'+a)
+          var data=a.toString()
+          data=data.replace('项目更新信息','')
+          data=data.replace(/(^\s*)|(\s*$)/g, "");
+
+          log('脚本更新信息='+data)
+
+          bw.write('手机'+device.model+'收到更新脚本的信息'+data + "\r\n"); //加上分行符，以便服务器按行读取
+          bw.flush()
+        }
       }
       sleep(6000)
     };

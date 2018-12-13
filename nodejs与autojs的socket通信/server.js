@@ -106,7 +106,7 @@ function t1() {
         recordClientInfo(mobileInfo)
         var scriptContent='alert(\''+ JSON.stringify(mobileInfo) +'\')'
           if(mobileInfo){
-            socket.write("runScript"+scriptContent+"\r\n");
+            // socket.write("runScript"+scriptContent+"\r\n");
             // once=true
 
           }
@@ -186,19 +186,26 @@ t1();
 
 process.on('message', (msg) => {
   console.log('大头儿子收到小头爸爸发来的的消息->'+msg)
+  if(msg.indexOf("项目更新信息") != -1){
+
+    命令所有手机更新指定项目的脚本(msg )
+  }
+
+
+
   process.send(`\n小头爸爸,我收到你的消息了,剩下的事情交给我了\n`);
   // process.send(`\nhello parent\n`);
   // process.send('[worker] worker received!');
-  命令所有手机更新指定项目的脚本()
 });
 
-function 命令所有手机更新指定项目的脚本(){
+function 命令所有手机更新指定项目的脚本(项目更新信息){
   console.log("执行命令,所有手机更新指定项目的脚本");
   console.log("手机数量="+所有的手机.length);
 
   for(let i=0;i<所有的手机.length;i++){
     var socket=所有的手机[i]
     socket.write("都起床,小头爸爸说,得更新脚本啦"+"\r\n");
+    socket.write("项目更新信息"+项目更新信息+"\r\n");
 
     console.log("本次通知手机对象%j:%j", socket.remoteAddress, socket.remotePort);
 

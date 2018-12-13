@@ -14,13 +14,16 @@ function childSendMsg(){
 
 }
 function 发送项目更新信息(){
+  console.log("发送项目更新信息");
+  
   var projectName='项目名称'
   var scriptVersionNumber='项目脚本版本号'
   var 项目更新信息={
     "projectName":projectName,
     "scriptVersionNumber":scriptVersionNumber
   }
-  child.send('项目更新信息',项目更新信息)
+  项目更新信息=JSON.stringify(项目更新信息)
+  child.send('项目更新信息'+项目更新信息)
 }
 
 setTimeout(childSendMsg,20000)

@@ -10,26 +10,26 @@ git status -s
 git branch
 
 创建分支
-git checkout master -b daily-12-13-成功给3台手机发送socket消息
+git checkout master -b daily-12-14-服务器和手机正常收发脚本更新信息
 
 提交到暂存区
 git add .
 
 提交评论
-git commit -m 'daily-12-13-成功给3台手机发送socket消息'
+git commit -m 'daily-12-14-服务器和手机正常收发脚本更新信息'
 
 推送到分支
-git push origin daily-12-13-成功给3台手机发送socket消息
+git push origin daily-12-14-服务器和手机正常收发脚本更新信息
 
 
 切换主干||分支
 git checkout master     ||    git checkout  daily-10-1
 
 本地合并分支到主干
-git merge daily-12-13-成功给3台手机发送socket消息
+git merge daily-12-14-服务器和手机正常收发脚本更新信息
 
 远端合并分支到主干
-git merge origin/daily-12-13-成功给3台手机发送socket消息
+git merge origin/daily-12-14-服务器和手机正常收发脚本更新信息
 
 推送主干
 git push origin master
