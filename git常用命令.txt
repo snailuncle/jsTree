@@ -10,26 +10,26 @@ git status -s
 git branch
 
 创建分支
-git checkout master -b daily-12-14-成功在手机上启动helloworld
+git checkout master -b daily-12-14-多次测试控制三台手机成功传输代码并运行
 
 提交到暂存区
 git add .
 
 提交评论
-git commit -m 'daily-12-14-成功在手机上启动helloworld'
+git commit -m 'daily-12-14-多次测试控制三台手机成功传输代码并运行'
 
 推送到分支
-git push origin daily-12-14-成功在手机上启动helloworld
+git push origin daily-12-14-多次测试控制三台手机成功传输代码并运行
 
 
 切换主干||分支
 git checkout master     ||    git checkout  daily-10-1
 
 本地合并分支到主干
-git merge daily-12-14-成功在手机上启动helloworld
+git merge daily-12-14-多次测试控制三台手机成功传输代码并运行
 
 远端合并分支到主干
-git merge origin/daily-12-14-成功在手机上启动helloworld
+git merge origin/daily-12-14-多次测试控制三台手机成功传输代码并运行
 
 推送主干
 git push origin master

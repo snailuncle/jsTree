@@ -65,41 +65,136 @@ router.use('/user', user)
 
 
 
-router.get('/runIndex/:projectName',async (ctx,next) => {
+router.get('/runIndex/:projectName', async (ctx, next) => {
   console.log('要运行的项目名称=')
   var projectName = ctx.params.projectName;
   console.log(projectName)
   ctx.response.body = `后端收到runIndex命令`;
 
-  //将指定项目压缩
-  var folder='./projectList/'+projectName
-  var zipFilePath=zipFolder(folder)
-  //告诉手机下载指定项目的压缩包
-  var 版本号=1
-  // 版本号读取所选项目的index.js文件,
-  // 查看scriptVersionNumber字段
-  var fs = require('fs');
-  var indexFilePath=folder+'/index.js'
-  if (!fs.existsSync(indexFilePath)) {
-      // Do something
-      console.log('请在项目中建立index.js文件');
-      console.log('文件中必须有一行内容来指定项目版本号,如下');
-      console.log('scriptVersionNumber=1');
 
-      process.exit(1)
+  if (指定项目中有index文件(projectName)) {
+    if (index文件中有版本号(projectName)) {
+
+    } else {
+      添加版本号(projectName)
+    }
+  } else {
+    在指定项目中创建index文件(projectName)
   }
 
 
 
-    console.log('--------读取index.js文件开始--------');
 
-    var fileContent = fs.readFileSync(indexFilePath, 'utf-8');
 
-    console.log('--------读取index.js文件结束--------');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //将指定项目压缩
+  var folder = './projectList/' + projectName
+  var zipFilePath = zipFolder(folder)
+  //告诉手机下载指定项目的压缩包
+  var 版本号 = 1
+  // 版本号读取所选项目的index.js文件,
+  // 查看scriptVersionNumber字段
+  var fs = require('fs');
+  var indexFilePath = folder + '/index.js'
+  if (!fs.existsSync(indexFilePath)) {
+    // Do something
+    console.log('请在项目中建立index.js文件');
+    console.log('文件中必须有一行内容来指定项目版本号,如下');
+    console.log('scriptVersionNumber=1');
+
+    process.exit(1)
+  }
+
+
+
+  console.log('--------读取index.js文件开始--------');
+
+  var fileContent = fs.readFileSync(indexFilePath, 'utf-8');
+
+  console.log('--------读取index.js文件结束--------');
 
   //检查版本号
-    var  reg=/scriptVersionNumber=(\d+)/
-    var 版本号=fileContent.match(reg)[1]
+  var reg = /scriptVersionNumber=(\d+)/
+  var 版本号 = fileContent.match(reg)[1]
 
 
 
@@ -109,11 +204,11 @@ router.get('/runIndex/:projectName',async (ctx,next) => {
 
 
 
-  var 服务器下载端口=port.httpPort
-  project={
-    "projectName":projectName,
-    "scriptVersionNumber":版本号,
-    'port':服务器下载端口
+  var 服务器下载端口 = port.httpPort
+  project = {
+    "projectName": projectName,
+    "scriptVersionNumber": 版本号,
+    'port': 服务器下载端口
   }
   tellMobileDownloadProjectZipFile(project)
   //下载完毕手机自动运行该项目中的index.js
@@ -123,16 +218,17 @@ router.get('/runIndex/:projectName',async (ctx,next) => {
 
 
 })
-function zipFolder(folder){
-  var zip=require('./zipFolder/zipFolder.js')
+
+function zipFolder(folder) {
+  var zip = require('./zipFolder/zipFolder.js')
   console.log("zip=")
   console.log(zip)
-  var zipFilePath=zip.zipFolder(folder)
-  return './'+zipFilePath
+  var zipFilePath = zip.zipFolder(folder)
+  return './' + zipFilePath
 }
 
 
-function tellMobileDownloadProjectZipFile(projectName){
+function tellMobileDownloadProjectZipFile(projectName) {
   var t = config.getTime()
   console.log(t)
   // console.log('6秒后通知手机更新脚本');
@@ -169,14 +265,16 @@ router.get('/download/:fileName', async function (ctx) {
   // 为了方便演示，这里直接下载index页面
 
 
-  var fileName = ctx.params.fileName+'.zip';
-  console.log('要下载的文件的名字='+fileName)
+  var fileName = ctx.params.fileName + '.zip';
+  console.log('要下载的文件的名字=' + fileName)
   // Set Content-Disposition to "attachment" to signal the client to prompt for download.
   // Optionally specify the filename of the download.
   // 设置实体头（表示消息体的附加信息的头字段）,提示浏览器以文件下载的方式打开
   // 也可以直接设置 ctx.set("Content-disposition", "attachment; filename=" + fileName);
   ctx.attachment(fileName);
-  await send(ctx, fileName, { root: __dirname + '/zipFolder' });
+  await send(ctx, fileName, {
+    root: __dirname + '/zipFolder'
+  });
 });
 
 
@@ -204,10 +302,10 @@ const child = require('child_process').fork('./socketServer.js');
 
 
 child.on('message', (msg) => {
-  console.log('大头儿子说->'+msg)
+  console.log('大头儿子说->' + msg)
 });
 
-function childSendMsg(projectName){
+function childSendMsg(projectName) {
   console.log('启动childSendMsg函数');
   console.log('现在通知手机更新脚本')
   child.send('小头爸爸说->大头儿子,让他们更新脚本吧');
@@ -216,7 +314,8 @@ function childSendMsg(projectName){
 
   发送项目更新信息(projectName)
 }
-function 发送项目更新信息(project){
+
+function 发送项目更新信息(project) {
   console.log("发送项目更新信息");
 
   // var projectName=project.projectName
@@ -225,8 +324,8 @@ function 发送项目更新信息(project){
   //   "projectName":projectName,
   //   "scriptVersionNumber":scriptVersionNumber
   // }
-  项目更新信息=JSON.stringify(project)
-  child.send('项目更新信息'+项目更新信息)
+  项目更新信息 = JSON.stringify(project)
+  child.send('项目更新信息' + 项目更新信息)
 }
 
 
@@ -240,4 +339,57 @@ function 发送项目更新信息(project){
 
 // }
 // setInterval(clock, 5000);
+
+
+
+
+
+function 指定项目中有index文件(projectName){
+  var fs= require('fs')
+  var path  = require('path');  // node内置模块。
+
+  var 指定项目文件夹=path.join(__dirname, './projectList', projectName)
+  var indexPath=path.join(指定项目文件夹, 'index.js')
+
+  if(fs.existsSync(indexPath)){
+    return true
+  }
+  return false
+
+}
+function index文件中有版本号(projectName){
+  var fs= require('fs')
+  var path  = require('path');  // node内置模块。
+
+  var 指定项目文件夹=path.join(__dirname, './projectList', projectName)
+  var indexPath=path.join(指定项目文件夹, 'index.js')
+
+  var indexContent=fs.readFileSync(indexPath, 'utf8');
+
+
+  var scriptVersionNumberReg = /scriptVersionNumber=(\d+)/
+  var svn = indexContent.match(scriptVersionNumberReg)
+  if(svn){
+    return true
+  }
+  return false
+}
+function 添加版本号(projectName){
+  var fs= require('fs')
+  var path  = require('path');  // node内置模块。
+
+  var 指定项目文件夹=path.join(__dirname, './projectList', projectName)
+  var indexPath=path.join(指定项目文件夹, 'index.js')
+  var data='\nscriptVersionNumber=1\n'
+  fs.appendFileSync(indexPath,data)
+}
+function 在指定项目中创建index文件(projectName){
+  var fs= require('fs')
+  var path  = require('path');  // node内置模块。
+
+  var 指定项目文件夹=path.join(__dirname, './projectList', projectName)
+  var indexPath=path.join(指定项目文件夹, 'index.js')
+  var data='\nscriptVersionNumber=1\nalert("hello world")\n'
+  fs.writeFileSync(indexPath,data)
+}
 

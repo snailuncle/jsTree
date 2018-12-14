@@ -21,6 +21,8 @@ console.show();
 var ip = config.serverIP;
 var port = config.port;
 var 连接服务器的次数 = 0
+var sdPath=files.getSdcardPath()
+var 脚本文件夹=files.join(sdPath, '脚本')
 events.on('socketERROR', () => {
   与服务器socket通信()
 });
@@ -77,7 +79,46 @@ function 与服务器socket通信() {
           bw.flush()
           //下载文件
           var project = (JSON.parse(data))
-          downloadFile(project)
+          //如果在线版本号大于本地版本号,那么就更新,否则就不更新
+          // 5A收到更新脚本的信息{"projectName":"某平台阅读脚本","scriptVersionNumber":"10","port":"3000"}
+          var 在线版本号=project.scriptVersionNumber
+          var 本地版本号=0
+          //本地版本号先查看项目是否存在,不存在版本号为0
+          //版本号在项目文件中的index.js文件中查询
+          if(指定项目存在(project.projectName) && 指定项目中有index文件(project.projectName) && index文件中有版本号(project.projectName)){
+            本地版本号=查询index文件中的版本号(project.projectName)
+          }
+
+          if(parseInt(在线版本号)>parseInt(本地版本号)){
+            console.log('开始更新脚本')
+            downloadFile(project)
+
+          }else{
+            console.log('本地版本已是最新版,不需要更新')
+            if(index文件是否在运行中()){
+              console.log('index文件是在运行中ING')
+            }else{
+              console.log('index文件没有运行,启动index.js')
+              启动项目文件中的index文件(project.projectName)
+              // alert('启动index完毕')
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          }
         }
       }
       sleep(6000)
@@ -85,6 +126,8 @@ function 与服务器socket通信() {
   } catch (err) {
     log('err=')
     log(err)
+    log('err.stack=')
+    log(err.stack)
     sleep(5000)
     events.emit('socketERROR');
   }
@@ -115,9 +158,18 @@ function downloadFile(project) {
     console.log('Content-Disposition=')
     console.log(fileName);
     // Content-Disposition: attachment; filename="???????.zip"; filename*=UTF-8''%E6%9F%90%E5%B9%B3%E5%8F%B0%E9%98%85%E8%AF%BB%E8%84%9A%E6%9C%AC.zip
-    var fileNameReg = /filename\*=UTF-8''(.+?\.zip)/
-    fileName = fileName.match(fileNameReg)[1]
-    fileName = decodeURI(fileName)
+
+    if(fileName.indexOf("filename*=UTF-8") != -1){
+
+          var fileNameReg = /filename\*=UTF-8''(.+?\.zip)/
+          fileName = fileName.match(fileNameReg)[1]
+          fileName = decodeURI(fileName)
+
+    }else{
+      var fileNameReg = /filename=\"(.+?\.zip)/
+      fileName = fileName.match(fileNameReg)[1]
+      // fileName = decodeURI(fileName)
+    }
     console.log('正则匹配fileName结果=');
     console.log(fileName);
     var path = './' + fileName
@@ -137,6 +189,8 @@ function downloadFile(project) {
 
 
 function 启动项目文件中的index文件(projectName){
+  console.log('启动项目文件中的index文件开始')
+  console.log('启动项目文件中的index文件(projectName)='+projectName)
 
 // log(files.getSdcardPath())
 // exit()
@@ -146,7 +200,7 @@ function 启动项目文件中的index文件(projectName){
 
   engines.execScriptFile(indexPath);
 
-
+  console.log('启动项目文件中的index文件完毕')
 
 
 }
@@ -171,9 +225,83 @@ function 停止除了自身的所有脚本(){
   log(enginesAll)
   enginesAll.map((ScriptEngine) => {
     if (engines.myEngine().toString() == ScriptEngine.toString()) {} else {
-      console.log('即将停止的脚本引擎' + ScriptEngine)
+      console.log('除了client.js其他即将停止的脚本引擎' + ScriptEngine)
       ScriptEngine.forceStop()
     }
   })
 
+}
+
+
+
+
+
+function 指定项目存在(projectName){
+  var 指定项目文件夹=files.join(脚本文件夹, projectName)
+  return files.exists(指定项目文件夹)
+}
+function 指定项目中有index文件(projectName){
+  var 指定项目文件夹=files.join(脚本文件夹, projectName)
+
+
+
+  var dir = 指定项目文件夹;
+  var arr = files.listDir(dir);
+  log(arr);
+  for(let i=0;i<arr.length;i++){
+    if(arr[i]=='index.js'){
+      return true
+    }
+  }
+  return false
+
+}
+function index文件中有版本号(projectName){
+  var 指定项目文件夹=files.join(脚本文件夹, projectName)
+  var indexPath=files.join(指定项目文件夹, 'index.js')
+  var indexContent=files.read(indexPath)
+
+
+  var scriptVersionNumberReg = /scriptVersionNumber=(\d+)/
+  var svn = indexContent.match(scriptVersionNumberReg)
+  if(svn){
+    return true
+  }
+  return false
+}
+
+// 本地版本号=查询index文件中的版本号()
+
+function 查询index文件中的版本号(projectName){
+  var 指定项目文件夹=files.join(脚本文件夹, projectName)
+  var indexPath=files.join(指定项目文件夹, 'index.js')
+  var indexContent=files.read(indexPath)
+
+
+  var scriptVersionNumberReg = /scriptVersionNumber=(\d+)/
+  var svn = (indexContent.match(scriptVersionNumberReg))[1]
+  return svn
+}
+
+
+
+
+function index文件是否在运行中(){
+  var enginesAll = engines.all()
+  log('enginesAll=')
+  log(enginesAll)
+  var indexRunning=false
+  enginesAll.map((ScriptEngine) => {
+    log('ScriptEngine.source=')
+    log(ScriptEngine.source)
+    if (String(ScriptEngine.source).indexOf('index.js') != -1){
+      console.log('查到的运行中的index.js文件是')
+      console.log(engines.myEngine().toString())
+      indexRunning=true
+    }
+  })
+  if(indexRunning){
+    return true
+  }
+  return false
 }
