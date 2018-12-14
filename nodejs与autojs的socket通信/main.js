@@ -15,7 +15,7 @@ function childSendMsg(){
 }
 function 发送项目更新信息(){
   console.log("发送项目更新信息");
-  
+
   var projectName='项目名称'
   var scriptVersionNumber='项目脚本版本号'
   var 项目更新信息={

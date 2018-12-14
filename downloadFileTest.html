@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>__小简__下载测试</title>
+    <style>
+        div {
+            width: 100%;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+    <script>
+        window.onload=function(){
+            var oBtnDownload=document.getElementById('download');
+            oBtnDownload.onclick=function(){
+                window.open('http://localhost:3000/download', '_blank')
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        <button id="download">点击下载</button>
+    </div>
+</body>
+
+</html>
+

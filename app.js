@@ -1,9 +1,12 @@
 const port = require("./config.json")
+const config = require("./config.js")
 const Koa = require('koa');
 const render = require('./src/index');
 const path = require('path');
 const bodyParser = require('koa-bodyparser')
 const controller = require('./controller');
+const send = require('koa-send'); // "koa-send": "^4.1.0"
+
 //引入子模块子路由
 const router = require('koa-router')();
 //websocket要导入的包
@@ -58,42 +61,7 @@ router.use('/user', user)
 // 'GET /runIndex': fn_runIndex
 
 
-var net = require("net");
-var config = require('./config')
-/**
- * 创建server
- */
 
-var server = net.createServer(function (socket) {
-  var t = config.getTime()
-  socket.write(t + "hello,i'm nodejs!"+"\r\n");
-  console.log(t + "client connected! %j:%j", socket.remoteAddress, socket.remotePort);
-  socket.on("data", function (data) {
-    var t = config.getTime()
-    console.log(t + "recived from autojs:", data.toString());
-    socket.write(t + "这是来自nodejs的数据->海贼王啥时候完结??"+"\r\n");
-  })
-  socket.on("close", function (had_error) {
-    if (!had_error) {
-      console.log("client closed success! %j:%j", socket.remoteAddress, socket.remotePort);
-    } else {
-      console.log("client close error! %j:%j", socket.remoteAddress, socket.remotePort);
-    }
-  })
-  socket.on("error", function (err) {
-    console.log("!!!err!!!", err);
-  });
-  //setTimeout(function(){
-  //    socket.end("我结束了","utf8");
-  //},3000);
-});
-server.listen({
-  port: config.port
-}, function () {
-  var t = config.getTime()
-  var address = server.address();
-  console.log(t + " opened server on address %j ", address);
-});
 
 
 
@@ -107,9 +75,50 @@ router.get('/runIndex/:projectName',async (ctx,next) => {
   var folder='./projectList/'+projectName
   var zipFilePath=zipFolder(folder)
   //告诉手机下载指定项目的压缩包
-  tellMobileDownloadProjectZipFile(zipFilePath)
-  //下载完毕手机自动运行该项目中的index.js
+  var 版本号=1
+  // 版本号读取所选项目的index.js文件,
+  // 查看scriptVersionNumber字段
+  var fs = require('fs');
+  var indexFilePath=folder+'/index.js'
+  if (!fs.existsSync(indexFilePath)) {
+      // Do something
+      console.log('请在项目中建立index.js文件');
+      console.log('文件中必须有一行内容来指定项目版本号,如下');
+      console.log('scriptVersionNumber=1');
 
+      process.exit(1)
+  }
+
+
+
+    console.log('--------读取index.js文件开始--------');
+
+    var fileContent = fs.readFileSync(indexFilePath, 'utf-8');
+
+    console.log('--------读取index.js文件结束--------');
+
+  //检查版本号
+    var  reg=/scriptVersionNumber=(\d+)/
+    var 版本号=fileContent.match(reg)[1]
+
+
+
+
+
+
+
+
+
+  var 服务器下载端口=port.httpPort
+  project={
+    "projectName":projectName,
+    "scriptVersionNumber":版本号,
+    'port':服务器下载端口
+  }
+  tellMobileDownloadProjectZipFile(project)
+  //下载完毕手机自动运行该项目中的index.js
+  //默认版本号为1 如果在index中发现版本号,以index中的版本号为准
+  //如果手机上的版本号小于当前版本号,那么就更新脚本.
 
 
 
@@ -123,12 +132,14 @@ function zipFolder(folder){
 }
 
 
-function tellMobileDownloadProjectZipFile(zipFilePath){
+function tellMobileDownloadProjectZipFile(projectName){
   var t = config.getTime()
+  console.log(t)
+  // console.log('6秒后通知手机更新脚本');
 
-  socket.write(t + "hello,i'm nodejs!"+"\r\n");
-  socket.write(t + "please download zipFile!"+"\r\n");
-  socket.write(t + "zipFilePathIs"+zipFilePath+"\r\n");
+  // setTimeout(childSendMsg,6000)
+  childSendMsg(projectName)
+
 
 }
 
@@ -153,6 +164,21 @@ function tellMobileDownloadProjectZipFile(zipFilePath){
 // })
 
 
+//下载文件
+router.get('/download/:fileName', async function (ctx) {
+  // 为了方便演示，这里直接下载index页面
+
+
+  var fileName = ctx.params.fileName+'.zip';
+  console.log('要下载的文件的名字='+fileName)
+  // Set Content-Disposition to "attachment" to signal the client to prompt for download.
+  // Optionally specify the filename of the download.
+  // 设置实体头（表示消息体的附加信息的头字段）,提示浏览器以文件下载的方式打开
+  // 也可以直接设置 ctx.set("Content-disposition", "attachment; filename=" + fileName);
+  ctx.attachment(fileName);
+  await send(ctx, fileName, { root: __dirname + '/zipFolder' });
+});
+
 
 app.use(router.routes()).use(router.allowedMethods())
 // app.use(async function (ctx) {
@@ -164,7 +190,54 @@ app.use(router.routes()).use(router.allowedMethods())
 console.log('port=')
 console.log(port)
 app.listen(port.httpPort);
-console.log('open http://localhost:' + port.httpPort);
+console.log('open           http://localhost:' + port.httpPort);
 app.on('error', function (err) {
   console.log(err.stack);
 });
+
+
+
+//以下是socket部分,fork一个子进程,以便与手机通信===================================================================================
+
+
+const child = require('child_process').fork('./socketServer.js');
+
+
+child.on('message', (msg) => {
+  console.log('大头儿子说->'+msg)
+});
+
+function childSendMsg(projectName){
+  console.log('启动childSendMsg函数');
+  console.log('现在通知手机更新脚本')
+  child.send('小头爸爸说->大头儿子,让他们更新脚本吧');
+
+  // setTimeout(发送项目更新信息,6000)
+
+  发送项目更新信息(projectName)
+}
+function 发送项目更新信息(project){
+  console.log("发送项目更新信息");
+
+  // var projectName=project.projectName
+  // var scriptVersionNumber=project.scriptVersionNumber
+  // var 项目更新信息={
+  //   "projectName":projectName,
+  //   "scriptVersionNumber":scriptVersionNumber
+  // }
+  项目更新信息=JSON.stringify(project)
+  child.send('项目更新信息'+项目更新信息)
+}
+
+
+
+
+
+
+// function clock(){
+//   var t = new Date();
+//   console.log(t);
+
+// }
+// setInterval(clock, 5000);
+
