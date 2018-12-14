@@ -11,3 +11,6 @@ https://github.com/aui/koa-art-template.git
 
 
 npm install jquery
+
+
+npm install   --registry=https://registry.npm.taobao.org
