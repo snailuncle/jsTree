@@ -18,6 +18,8 @@ git add .
 提交评论
 git commit -m 'daily-12-14-git关联'
 
+git commit -m 'daily-12-14-补充两条git命令'
+
 推送到分支
 git push origin daily-12-14-git关联
 
@@ -95,3 +97,13 @@ git fetch
 git merge origin/master
 
 git push -u origin master
+
+
+
+设置git的user name和email：
+$ git config --global user.name "snale"
+$ git config --global user.email "178@qq.com"
+
+ssh-keygen -t rsa -C "1704@qq.com"
+
+
