@@ -85,3 +85,13 @@ git pull
 git pull origin master --allow-unrelated-histories
 
 后面加上 --allow-unrelated-histories ， 把两段不相干的 分支进行强行合并
+
+git remote add origin git@git.项目地址
+
+git push -u origin master
+
+git fetch
+
+git merge origin/master
+
+git push -u origin master
