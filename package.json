@@ -10,7 +10,7 @@
         "koa",
         "async"
     ],
-    "author": "Michael Liao",
+    "author": "qq203118908",
     "license": "Apache-2.0",
     "dependencies": {
         "art-template": "^4.13.2",

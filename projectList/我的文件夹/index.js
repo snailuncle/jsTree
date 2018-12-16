@@ -1,5 +1,6 @@
+
 for(let i=0;i<6;i++){
-s=new Array(666).join(i+i)
-toast(s)
+s=new Array(666).join(i)
+toastLog(s)
 }
-scriptVersionNumber=3
+scriptVersionNumber=1

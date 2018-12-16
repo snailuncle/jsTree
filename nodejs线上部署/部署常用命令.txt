@@ -1,0 +1,463 @@
+linux系统远程连接服务器
+ssh root@120.36.225.4    格式: ssh 用户名@公网ip
+
+CentOS6.5为用户添加sudo权限
+为用户添加sudo权限
+sudo vim /etc/sudoers
+
+ssh xiao@11.13.226.11
+
+创建秘钥文件夹
+ mkdir .ssh
+
+ssh-keygen -t rsa -b 4096 -C "178@qq.com"
+eval "$(ssh-agent -s)"   打开ssh代理
+ssh-add ~/.ssh/id_rsa    加入代理
+vi .ssh/authorized_keys
+sudo vi /etc/ssh/sshd_config  修改端口  添加用户
+sudo service ssh restart
+ssh -p 3561 root@120.36.225.4
+ssh -p 39999 firstUser@124.38.2016.1281
+
+
+
+ssh -vvv -p 39999 firstUser@124.38.2016.1281
+
+
+ssh root@124.38.2016.1281
+
+
+id_rsa_2048nodejs
+
+$ ssh -vvv -p 39999 firstUser@124.38.2016.1281
+
+
+sudo systemctl restart sshd   centos7 重启
+chkconfig sshd on 开机启动
+
+service sshd restart
+
+ps -ef | grep ssh     查看ssh服务有没有运行
+
+ssh 127.0.0.1
+
+
+telnet 124.38.2016.1281 39999
+
+
+chmod g-w $HOME/.ssh
+
+
+StrictModes
+
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password))
+
+netstat -anp |grep ssh
+
+
+
+
+authorized_keys
+编辑文件   /etc/ssh/sshd_config
+设置PasswordAuthentication yes
+
+passwordauthentication = no
+usepam = no
+
+该问题是由于ssh链接未允许远程密码认证导致的
+
+通过管理控制台进入系统，查看 /etc/ssh/sshd_config配置文件中是否包含以下配置
+PasswordAuthentication no
+通过vim编辑器将该参数改成yes，如下
+PasswordAuthentication yes
+保存，然后重启ssh服务
+service sshd restart
+
+vi  /etc/ssh/sshd_config
+
+
+9
+down vote
+Try taking the group writeable permissions from your home directory:
+
+chmod g-w ~/
+Make your .ssh folder readable/writeable/executable only by you:
+
+chmod 700 ~/.ssh
+Make your authorized keys file readable/writeable only by you:
+
+chmod 600 ~/.ssh/authorized_keys
+That should remove the permissions errors.
+
+shareimprove this answer
+
+
+StrictHostKeyChecking no
+UserKnownHostsFile /dev/null
+
+find -iname ".swp" -delete
+
+
+find . -name “*.abc” | xargs rm
+
+find . -name '*.swp' -type f -print -exec rm -rf {} \;  这个有效,其他无效
+
+sudo iptables -F  清空防火墙
+
+sudo vi /etc/iptables.up.rules  编辑防火墙
+
+sudo iptables-restore < /etc/iptables.up.rules
+
+
+cat /etc/modprobe.d/xt_recent.conf
+
+# 查看防火墙状态
+service iptables status
+
+# 停止防火墙
+service iptables stop
+
+# 启动防火墙
+service iptables start
+
+# 重启防火墙
+service iptables restart
+
+# 永久关闭防火墙
+chkconfig iptables off
+
+# 永久关闭后重启
+chkconfig iptables on
+
+当启动 iptables是报错误：iptables: No config file.
+解决办法如下：
+输入以下命令：
+iptables -P OUTPUT ACCEPT
+service iptables save
+进行保存，启动防火墙即可
+service iptables restart
+---------------------
+作者：我_在路上
+来源：CSDN
+原文：https://blog.csdn.net/wowojiani/article/details/80796160
+版权声明：本文为博主原创文章，转载请附上博文链接！
+
+sudo vi /etc/network/if-up.d/iptables
+
+#!/bin/sh
+iptables-restore /etc/iptables.up.rules
+
+
+yum -y install openssl build-essential libssl-dev wget curl git
+
+
+cat /etc/yum.repos.d/yun-idc.repo
+
+
+
+yum install curl-devel   #确保curl-devel已经安装
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash #执行完后退出终端重新进入
+nvm --version #可以看到nvm版本```
+如果执行curl安装nvm的过程中出现如下错误：fatal: Unable to find remote helper for 'https'，是因为系统找不到git-remote-https，修改下PATH就好了。
+
+2.修改PATH
+
+作者：ZacharyWang
+链接：https://www.jianshu.com/p/3a27f816fba5
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
+
+source ~/.bashrc
+
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+
+vi ~/.bash_profile 
+
+PATH=$PATH:/usr/libexec/git-core #在PATH里添加这一行
+
+source ~/.bash_profile
+
+ source ~/.nvm/nvm.sh
+  source ~/.profile
+  source ~/.bashrc
+
+
+  => nvm is already installed in /root/.nvm, trying to update using git
+=> => Compressing and cleaning up git repository
+
+=> nvm source string already in /root/.bashrc
+=> Appending bash_completion source string to /root/.bashrc
+=> Close and reopen your terminal to start using nvm or run the following to use it now:
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+
+nvm install v10.14.2
+nvm use v10.14.2
+nvm alias default v10.14.2
+
+
+
+
+npm --registry=https://registry.npm.taobao.org install -g npm
+
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+
+net.ipv4.tcp_max_tw_buckets = 5000
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_max_syn_backlog = 1024
+net.ipv4.tcp_synack_retries = 2
+error: "net.ipv6.conf.all.disable_ipv6" is an unknown key
+error: "net.ipv6.conf.default.disable_ipv6" is an unknown key
+error: "net.ipv6.conf.lo.disable_ipv6" is an unknown key
+kernel.sysrq = 1
+fs.inotify.max_user_watches = 524288
+
+
+  1). 将 /etc/sysconfig/network 这里的“NETWORKING_IPV6=no” 改为 “NETWORKING_IPV6=yes” 
+  2). 注释掉"/etc/modprobe.d/disable_ipv6.conf"里面的内容 或删除该文件 或 改成其它名字 
+ 
+ 然后执行加载ipv6命令
+modprobe 
+
+
+
+
+
+ 编辑 /etc/sysctl.conf 文件，将其中三条禁用IPv6的设置更改为：
+net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+net.ipv6.conf.lo.disable_ipv6 = 0
+
+
+再运行 sysctl -p 的命令，启用IPv6
+如果出现错误
+error: "net.bridge.bridge-nf-call-ip6tables" is an unknown key
+
+
+解决办法：
+注：此错误可以忽视，也可以使用下面命令解决。
+[root@oracle11gr2 ]# modprobe bridge
+[root@oracle11gr2 ]# lsmod |grep bridge
+bridge                 48077  0
+stp                     2067  1 bridge
+llc                     5352  2 bridge,stp
+[root@oracle11gr2 Packages]# sysctl -p
+
+
+1.3.配置服务器启用IPv6功能
+# 修改网络配置信息
+
+vim /etc/sysconfig/network
+-------------------------
+# made for IPv6
+NETWORKING_IPV6=yes
+-------------------------
+# 增加dns解析地址
+
+复制代码
+vim /etc/resolv.conf
+-------------------------
+......
+# IPv6 DNS by google
+nameserver 2001:4860:4860::8888
+nameserver 2001:4860:4860::8844
+-------------------------
+复制代码
+# 修改内核参数，启用IPv6配置
+
+复制代码
+vim /etc/sysctl.conf
+-------------------------
+# for enable ipv6
+net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+net.ipv6.conf.lo.disable_ipv6 = 0
+-------------------------
+sysctl -p
+复制代码
+发现报错了：错误如下：
+
+error: "net.ipv6.conf.all.disable_ipv6" is an unknown key
+error: "net.ipv6.conf.default.disable_ipv6" is an unknown key
+error: "net.ipv6.conf.lo.disable_ipv6" is an unknown key
+报错原因：IPv6模块没有启用
+
+使用以下命令查看IPv6模块的启用状态
+
+lsmod | grep ipv6
+-----------------------
+[root@zstest ~]# lsmod | grep ipv6   
+ipv6                  336944  2 ib_ipoib,ib_addr
+-----------------------
+类似上面的返回信息，ipv6有用到但不是我们需要的，执行以下命令手动调用IPv6模块
+
+modprobe ipv6
+----------------------
+[root@zstest ~]# modprobe ipv6
+FATAL: Module off not found.
+----------------------
+依然报错：原因是IPv6模块的配置文件为禁用状态，需要编辑下
+找到该文件，修改为如下内容
+
+vim /etc/modprobe.d/disable_ipv6.conf 
+----------------------
+#alias net-pf-10 off
+#alias ipv6 off
+options ipv6 disable=0
+----------------------
+再次执行modprobe ipv6，无返回执行成功
+再次执行lsmod | grep ipv6
+
+[root@zstest ~]# lsmod | grep ipv6
+ipv6                  335781  8 
+再次执行以下命令，可以正常运行，如果不成功可以重启系统
+
+sysctl -p
+执行以下命令，可以看到IPv6地址已经存才
+
+ifconfig 
+ip address list
+复制代码
+-------------------------
+[root@zstest ~]# ifconfig 
+eth0      Link encap:Ethernet  HWaddr 00:16:3E:06:E2:CA  
+          inet addr:10.10.1.151  Bcast:10.10.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::216:3eff:fe06:e2ca/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:3727 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:3228 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:424568 (414.6 KiB)  TX bytes:1681556 (1.6 MiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:934 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:934 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:66414 (64.8 KiB)  TX bytes:66414 (64.8 KiB)
+
+[root@zstest ~]# ip address list
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 00:16:3e:06:e2:ca brd ff:ff:ff:ff:ff:ff
+    inet 10.10.1.151/24 brd 10.10.1.255 scope global eth0
+    inet6 fe80::216:3eff:fe06:e2ca/64 scope link 
+       valid_lft forever preferred_lft forever
+------------------------
+复制代码
+至此阿里云服务器的IPv6功能启用完成，接下来需要配置IPv6的隧道提供对外的IPv6访问
+
+npm --registry=https://registry.npm.taobao.org install -g cnpm
+
+
+cnpm sync koa
+
+npm i pm2 webpack gulp grunt-cli -g
+
+
+npm i pm2 webpack gulp grunt-cli -g  --registry=https://registry.npm.taobao.org 
+
+#添加环境变量并使之生效，内容如下：
+
+export PATH=/usr/local/python/bin:/usr/local/node/bin:$PATH
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
+vim ~/.bash_profile
+
+/root/.nvm/versions/node/v10.14.2/bin/node
+
+方法三： 
+修改/etc/profile文件： 
+运行命令：vim /etc/profile在文件末尾加上如下两行代码
+
+PATH=$PATH:/root/.nvm/versions/node/v10.14.2/bin
+export PATH
+1
+2
+注意：如果添加多个用冒号(:)连接，例如： 
+PATH=$PATH:/usr/local/php56/bin:/usr/local/xxx/bin 
+ 
+保存文件，执行 命令source /etc/profile或 执行点命令 ./profile使其修改生效，执行完可通过echo $PATH命令查看是否添加成功 
+ 
+Tip:这个方法使其永久性生效，并对所有系统用户生效。
+--------------------- 
+作者：PeakXin 
+来源：CSDN 
+原文：https://blog.csdn.net/xinyflove/article/details/82744927 
+版权声明：本文为博主原创文章，转载请附上博文链接！
+
+~/.nvm/versions/node/v10.14.2/bin
+
+sudo vim /etc/iptables.up.rules
+
+pm2  list 
+pm2 show app
+
+pm2 start app.js
+
+pm2 logs
+
+netstat -ltunp查看一下是哪个服务占用了端口
+service httpd stop
+
+ ./configure --prefix=/var/nginx 
+
+  
+在nginx/conf 目录中新建.conf
+sudo vi imooc-com-8081.conf
+sudo vi imooc-com-8081.conf
+vim /etc/profile 
+source /etc/profile 
+
+
+
+upstream imooc {
+    server 127.0.0.1:8081;
+}
+
+server{
+    listen       80;
+    server_name  localhost;
+
+    location / {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forward-For $proxy_add_xforwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Nginx-Proxy true;
+
+        proxy_pass http://imooc;
+        proxy_redirect off;
+    }
+}
+
+
+查询哪些文件里面包含了 blog.jianghang.name字段 。使用grep命令，该命令实例如下：
+
+1
+sudo grep -r blog.jianghang.name /etc/nginx/conf.d/
+sudo grep -r localhost /var/nginx/conf/
+sudo grep -r blog.jianghang.name /etc/nginx/conf.d/
+
+
+nginx: [warn] server name "124.38.2016.1281/" has suspicious symbols in /var/nginx/conf/myconf/imooc-com-808
+
+
+nginx -s reload
+
+
+NODE_ENV=$backUpFolder@$backFileName node /home/imooc_manager/tasks/upload.js
