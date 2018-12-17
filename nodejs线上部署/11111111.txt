@@ -1,1 +1,5 @@
 scp C:/Users/Administrator/.ssh/id_rsa.pub firstUser@118.190.206.181:/home/firstUser/.ssh/authorized_keys
+
+
+-A INPUT -s 127.0.0.1 -p tcp --destination-port 8811 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -s 127.0.0.1 -p tcp --source-port 8811 -m state --state ESTABLISHED -j ACCEPT

@@ -1,0 +1,42 @@
+netstat -nat | grep -i "8811" | wc -l
+
+
+﻿﻿
+测试端口连通
+
+nc -v -w 1   118.190.206.181 -z 8811
+
+
+2.netstat   -nultp（此处不用加端口号）
+
+该命令是查看当前所有已经使用的端口情况，如图2：
+
+
+telnet 118.190.206.181 8811
+
+
+telnet localhost 8811
+
+
+[root@iZm5e6a02rvv1zo3ey55slZ sbin]# service xinetd restart
+Stopping xinetd:                                           [FAILED]
+Starting xinetd:                                           [  OK  ]
+[root@iZm5e6a02rvv1zo3ey55slZ sbin]# netstat -tnl |grep 23
+
+查看指定端口的占用情况：netstat -aon|findstr "端口号"
+netstat -aon|findstr "8811"
+netstat -aon|grep "8811"
+
+/sbin/iptables -L -n          //see port
+
+
+sudo lsof -n -P | grep :8811
+
+
+其他的停止nginx 方式：
+
+ps -ef | grep nginx
+
+kill -QUIT 主进程号     ：从容停止Nginx
+kill -TERM 主进程号     ：快速停止Nginx
+pkill -9 nginx          ：强制停止Nginx

@@ -19,7 +19,9 @@ importClass('java.net.Socket');
 importClass('java.net.UnknownHostException');
 console.show();
 var ip = config.serverIP;
+console.log('server ip='+ip)
 var port = config.port;
+console.log('server port='+port)
 var 连接服务器的次数 = 0
 var sdPath=files.getSdcardPath()
 var 脚本文件夹=files.join(sdPath, '脚本')
@@ -138,8 +140,9 @@ function downloadFile(project) {
   var ip = config.serverIP;
   var port = project.port;
   // router.get('/download/:fileName', async function (ctx) {
-  http: //localhost:3000/
-    var url = ip + ":" + port + "/download/" + project.projectName
+  // http: //localhost:3000/
+    var url = 'www.xiaoxinfeng.com.cn' + "/download/" + project.projectName
+    // var url = ip + ":" + port + "/download/" + project.projectName
   console.log('手机请求的url=' + url);
   http.get(url, {}, function (res, err) {
     if (err) {

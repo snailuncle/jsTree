@@ -62,4 +62,5 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub  aliyunzixun@xxx.com
 
 scp C:/Users/Administrator/.ssh/id_rsa.pub firstUser@118.190.206.181:/home/firstUser/.ssh/authorized_keys
 
-
+chown -R firstUser /root
+/root/.nvm/versions/node/v10.14.2/bin:/sbin:/bin

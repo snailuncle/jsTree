@@ -24,7 +24,15 @@ function getTime() {
   // 2018-08-02 21:22:07
 }
 module.exports = {
-  "serverIP": "192.168.12.101",
+  "serverIP": "118.190.206.181",
   "port": "8811",
   "getTime": getTime
 }
+
+
+
+// module.exports = {
+//   "serverIP": "192.168.12.101",
+//   "port": "8811",
+//   "getTime": getTime
+// }
