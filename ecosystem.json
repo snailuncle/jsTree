@@ -10,7 +10,6 @@
       }
    }],
    "deploy" : {
-     // "production" is the environment name
      "production" : {
        "user" : "firstUser",
        "host" : ["118.190.206.181"],

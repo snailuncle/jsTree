@@ -1,0 +1,1 @@
+scp C:/Users/Administrator/.ssh/id_rsa.pub firstUser@118.190.206.181:/home/firstUser/.ssh/authorized_keys

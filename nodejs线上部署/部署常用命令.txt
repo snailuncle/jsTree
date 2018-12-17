@@ -1,6 +1,8 @@
 linux系统远程连接服务器
 ssh root@120.36.225.4    格式: ssh 用户名@公网ip
 
+ssh firstUser@118.190.206.181
+
 CentOS6.5为用户添加sudo权限
 为用户添加sudo权限
 sudo vim /etc/sudoers
@@ -16,6 +18,21 @@ ssh-add ~/.ssh/id_rsa    加入代理
 vi .ssh/authorized_keys
 sudo vi /etc/ssh/sshd_config  修改端口  添加用户
 sudo service ssh restart
+
+有效重启ssh服务
+sudo /etc/init.d/sshd restart
+
+
+
+ scp C:/Users/Administrator/.ssh/id_rsa.pub firstUser@118.190.206.181:/home/firstUser/.ssh/authorized_keys
+
+
+
+
+
+
+
+
 ssh -p 3561 root@120.36.225.4
 ssh -p 39999 firstUser@124.38.2016.1281
 
@@ -171,7 +188,7 @@ source ~/.bashrc
 
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
 
-vi ~/.bash_profile 
+vi ~/.bash_profile
 
 PATH=$PATH:/usr/libexec/git-core #在PATH里添加这一行
 
@@ -218,11 +235,11 @@ kernel.sysrq = 1
 fs.inotify.max_user_watches = 524288
 
 
-  1). 将 /etc/sysconfig/network 这里的“NETWORKING_IPV6=no” 改为 “NETWORKING_IPV6=yes” 
-  2). 注释掉"/etc/modprobe.d/disable_ipv6.conf"里面的内容 或删除该文件 或 改成其它名字 
- 
+  1). 将 /etc/sysconfig/network 这里的“NETWORKING_IPV6=no” 改为 “NETWORKING_IPV6=yes”
+  2). 注释掉"/etc/modprobe.d/disable_ipv6.conf"里面的内容 或删除该文件 或 改成其它名字
+
  然后执行加载ipv6命令
-modprobe 
+modprobe
 
 
 
@@ -291,7 +308,7 @@ error: "net.ipv6.conf.lo.disable_ipv6" is an unknown key
 
 lsmod | grep ipv6
 -----------------------
-[root@zstest ~]# lsmod | grep ipv6   
+[root@zstest ~]# lsmod | grep ipv6
 ipv6                  336944  2 ib_ipoib,ib_addr
 -----------------------
 类似上面的返回信息，ipv6有用到但不是我们需要的，执行以下命令手动调用IPv6模块
@@ -304,7 +321,7 @@ FATAL: Module off not found.
 依然报错：原因是IPv6模块的配置文件为禁用状态，需要编辑下
 找到该文件，修改为如下内容
 
-vim /etc/modprobe.d/disable_ipv6.conf 
+vim /etc/modprobe.d/disable_ipv6.conf
 ----------------------
 #alias net-pf-10 off
 #alias ipv6 off
@@ -314,45 +331,45 @@ options ipv6 disable=0
 再次执行lsmod | grep ipv6
 
 [root@zstest ~]# lsmod | grep ipv6
-ipv6                  335781  8 
+ipv6                  335781  8
 再次执行以下命令，可以正常运行，如果不成功可以重启系统
 
 sysctl -p
 执行以下命令，可以看到IPv6地址已经存才
 
-ifconfig 
+ifconfig
 ip address list
 复制代码
 -------------------------
-[root@zstest ~]# ifconfig 
-eth0      Link encap:Ethernet  HWaddr 00:16:3E:06:E2:CA  
+[root@zstest ~]# ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:16:3E:06:E2:CA
           inet addr:10.10.1.151  Bcast:10.10.1.255  Mask:255.255.255.0
           inet6 addr: fe80::216:3eff:fe06:e2ca/64 Scope:Link
           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
           RX packets:3727 errors:0 dropped:0 overruns:0 frame:0
           TX packets:3228 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000 
+          collisions:0 txqueuelen:1000
           RX bytes:424568 (414.6 KiB)  TX bytes:1681556 (1.6 MiB)
 
-lo        Link encap:Local Loopback  
+lo        Link encap:Local Loopback
           inet addr:127.0.0.1  Mask:255.0.0.0
           inet6 addr: ::1/128 Scope:Host
           UP LOOPBACK RUNNING  MTU:65536  Metric:1
           RX packets:934 errors:0 dropped:0 overruns:0 frame:0
           TX packets:934 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:0 
+          collisions:0 txqueuelen:0
           RX bytes:66414 (64.8 KiB)  TX bytes:66414 (64.8 KiB)
 
 [root@zstest ~]# ip address list
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN 
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
-    inet6 ::1/128 scope host 
+    inet6 ::1/128 scope host
        valid_lft forever preferred_lft forever
 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
     link/ether 00:16:3e:06:e2:ca brd ff:ff:ff:ff:ff:ff
     inet 10.10.1.151/24 brd 10.10.1.255 scope global eth0
-    inet6 fe80::216:3eff:fe06:e2ca/64 scope link 
+    inet6 fe80::216:3eff:fe06:e2ca/64 scope link
        valid_lft forever preferred_lft forever
 ------------------------
 复制代码
@@ -366,7 +383,7 @@ cnpm sync koa
 npm i pm2 webpack gulp grunt-cli -g
 
 
-npm i pm2 webpack gulp grunt-cli -g  --registry=https://registry.npm.taobao.org 
+npm i pm2 webpack gulp grunt-cli -g  --registry=https://registry.npm.taobao.org
 
 #添加环境变量并使之生效，内容如下：
 
@@ -381,31 +398,31 @@ vim ~/.bash_profile
 
 /root/.nvm/versions/node/v10.14.2/bin/node
 
-方法三： 
-修改/etc/profile文件： 
+方法三：
+修改/etc/profile文件：
 运行命令：vim /etc/profile在文件末尾加上如下两行代码
 
 PATH=$PATH:/root/.nvm/versions/node/v10.14.2/bin
 export PATH
 1
 2
-注意：如果添加多个用冒号(:)连接，例如： 
-PATH=$PATH:/usr/local/php56/bin:/usr/local/xxx/bin 
- 
-保存文件，执行 命令source /etc/profile或 执行点命令 ./profile使其修改生效，执行完可通过echo $PATH命令查看是否添加成功 
- 
+注意：如果添加多个用冒号(:)连接，例如：
+PATH=$PATH:/usr/local/php56/bin:/usr/local/xxx/bin
+
+保存文件，执行 命令source /etc/profile或 执行点命令 ./profile使其修改生效，执行完可通过echo $PATH命令查看是否添加成功
+
 Tip:这个方法使其永久性生效，并对所有系统用户生效。
---------------------- 
-作者：PeakXin 
-来源：CSDN 
-原文：https://blog.csdn.net/xinyflove/article/details/82744927 
+---------------------
+作者：PeakXin
+来源：CSDN
+原文：https://blog.csdn.net/xinyflove/article/details/82744927
 版权声明：本文为博主原创文章，转载请附上博文链接！
 
 ~/.nvm/versions/node/v10.14.2/bin
 
 sudo vim /etc/iptables.up.rules
 
-pm2  list 
+pm2  list
 pm2 show app
 
 pm2 start app.js
@@ -415,14 +432,14 @@ pm2 logs
 netstat -ltunp查看一下是哪个服务占用了端口
 service httpd stop
 
- ./configure --prefix=/var/nginx 
+ ./configure --prefix=/var/nginx
 
-  
+
 在nginx/conf 目录中新建.conf
 sudo vi imooc-com-8081.conf
 sudo vi imooc-com-8081.conf
-vim /etc/profile 
-source /etc/profile 
+vim /etc/profile
+source /etc/profile
 
 
 

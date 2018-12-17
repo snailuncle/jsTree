@@ -39,3 +39,27 @@ pm2 deploy ecosystem.json production
 
 
 
+程序运行报错了，你可以pm2 show 0, 获取去日志中查看报错信息
+
+service sshd restart
+
+
+scp C:\Users\Administrator\.ssh\id_rsa.pub firstUser@123.57.205.23:/home/firstUser/.ssh/authorized_keys
+
+
+git config --global user.name "snailuncle"
+
+git config --global user.email "1789500304@qq.com"
+
+
+ssh-keygen -t rsa -C "1789500304@qq.com"
+
+ssh git@github.com
+
+
+ssh-keygen -t rsa -C "xxxxx@xxxxx.com"
+ssh-copy-id -i ~/.ssh/id_rsa.pub  aliyunzixun@xxx.com
+
+scp C:/Users/Administrator/.ssh/id_rsa.pub firstUser@118.190.206.181:/home/firstUser/.ssh/authorized_keys
+
+
