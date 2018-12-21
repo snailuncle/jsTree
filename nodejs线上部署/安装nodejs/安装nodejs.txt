@@ -1,0 +1,24 @@
+ 安装必要的编译软件包
+ yum install gcc gcc-c++
+
+二、从源码下载Nodejs
+
+cd /usr/local/src
+wget https://npm.taobao.org/mirrors/node/v10.13.0/node-v10.13.0.tar.gz
+三、解压 nodejs 安装包
+
+tar xvf node-v10.13.0.tar.gz
+四、进入解压的 node 文件夹，开始编译
+
+cd node-v10.13.0/
+./configure
+make
+
+五、安装Nodejs
+
+sudo make install
+
+
+六、验证是否正确安装
+
+node -v

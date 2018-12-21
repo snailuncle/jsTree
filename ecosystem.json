@@ -1,6 +1,6 @@
 {
    "apps" : [{
-      "name" : "autojsOnline",
+      "name" : "do",
       "script" : "app.js",
       "env" : {
         "COMMON_VARIABLE": "true"
@@ -11,7 +11,7 @@
    }],
    "deploy" : {
      "production" : {
-       "user" : "firstUser",
+       "user" : "root",
        "host" : ["118.190.206.181"],
        "port" : "39999",
        "ref"  : "origin/master",

@@ -19,6 +19,13 @@ vi .ssh/authorized_keys
 sudo vi /etc/ssh/sshd_config  修改端口  添加用户
 sudo service ssh restart
 
+
+systemctl restart sshd
+
+
+
+
+
 有效重启ssh服务
 sudo /etc/init.d/sshd restart
 
@@ -123,7 +130,10 @@ sudo iptables -F  清空防火墙
 
 sudo vi /etc/iptables.up.rules  编辑防火墙
 
-sudo iptables-restore < /etc/iptables.up.rules
+sudo iptables-restore < /etc/sysconfig/iptables
+
+
+iptables-restore < /etc/iptables.up.rules
 
 
 cat /etc/modprobe.d/xt_recent.conf
@@ -136,7 +146,8 @@ service iptables stop
 
 # 启动防火墙
 service iptables start
-
+systemctl  start  iptables.service
+systemctl  restart  iptables.service
 # 重启防火墙
 service iptables restart
 
