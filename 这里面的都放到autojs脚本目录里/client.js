@@ -93,6 +93,10 @@ function 与服务器socket通信() {
             console.log('开始更新脚本')
             downloadFile(project)
 
+          }else if(在线版本号=='666'){
+            console.log('666无视版本号开始更新脚本')
+            downloadFile(project)
+
           }else{
             console.log('本地版本已是最新版,不需要更新')
             if(index文件是否在运行中()){

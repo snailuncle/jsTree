@@ -218,6 +218,105 @@ router.get('/runIndex/:projectName', async (ctx, next) => {
 
 
 })
+router.get('/runIndexDesignateMobile/:projectNameAndMobileInfo', async (ctx, next) => {
+  var fs = require('fs');
+
+  console.log('要运行的项目名称=')
+  var projectNameAndMobileInfo = ctx.params.projectNameAndMobileInfo;
+  var projectName = projectNameAndMobileInfo.match(/.*?(?=手机唯一标识码)/)[0]
+  var 手机唯一标识码=projectNameAndMobileInfo.match(/手机唯一标识码(.*)/)[1]
+  console.log(projectName)
+  console.log(手机唯一标识码)
+  手机唯一标识码=手机唯一标识码.split(';')
+  console.log(手机唯一标识码)
+  var 手机唯一标识码json={"手机唯一标识码":手机唯一标识码}
+
+
+  手机唯一标识码json=JSON.stringify(手机唯一标识码json)
+  console.log(手机唯一标识码json)
+
+
+  fs.writeFileSync('./mobileCode.json',手机唯一标识码json)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ctx.response.body = `后端收到runIndexDesignateMobile命令`;
+
+
+  if (指定项目中有index文件(projectName)) {
+    if (index文件中有版本号(projectName)) {
+
+    } else {
+      添加版本号(projectName)
+    }
+  } else {
+    在指定项目中创建index文件(projectName)
+  }
+
+
+
+  //将指定项目压缩
+  var folder = './projectList/' + projectName
+  var zipFilePath = zipFolder(folder)
+  //告诉手机下载指定项目的压缩包
+  var 版本号 = 1
+  // 版本号读取所选项目的index.js文件,
+  // 查看scriptVersionNumber字段
+  var indexFilePath = folder + '/index.js'
+  if (!fs.existsSync(indexFilePath)) {
+    // Do something
+    console.log('请在项目中建立index.js文件');
+    console.log('文件中必须有一行内容来指定项目版本号,如下');
+    console.log('scriptVersionNumber=1');
+
+    process.exit(1)
+  }
+
+
+
+  console.log('--------读取index.js文件开始--------');
+
+  var fileContent = fs.readFileSync(indexFilePath, 'utf-8');
+
+  console.log('--------读取index.js文件结束--------');
+
+  //检查版本号
+  var reg = /scriptVersionNumber=(\d+)/
+  var 版本号 = fileContent.match(reg)[1]
+
+
+
+
+
+
+
+
+
+  var 服务器下载端口 = port.httpPort
+  project = {
+    "projectName": projectName,
+    "scriptVersionNumber": 版本号,
+    'port': 服务器下载端口
+  }
+  tellDesignateMobileDownloadProjectZipFile(project)
+  //下载完毕手机自动运行该项目中的index.js
+  //默认版本号为1 如果在index中发现版本号,以index中的版本号为准
+  //如果手机上的版本号小于当前版本号,那么就更新脚本.
+
+
+
+})
 
 function zipFolder(folder) {
   var zip = require('./zipFolder/zipFolder.js')
@@ -235,6 +334,18 @@ function tellMobileDownloadProjectZipFile(projectName) {
 
   // setTimeout(childSendMsg,6000)
   childSendMsg(projectName)
+
+
+}
+function tellDesignateMobileDownloadProjectZipFile(projectName) {
+  var t = config.getTime()
+  console.log(t)
+  // console.log('6秒后通知手机更新脚本');
+  var fs = require('fs'); // 引入fs模块
+  // setTimeout(childSendMsg,6000)
+  var 手机唯一标识码=fs.readFileSync('./mobileCode.json')
+  手机唯一标识码=JSON.parse(手机唯一标识码)
+  childSendMsg(projectName,手机唯一标识码.手机唯一标识码)
 
 
 }
@@ -305,17 +416,17 @@ child.on('message', (msg) => {
   console.log('大头儿子说->' + msg)
 });
 
-function childSendMsg(projectName) {
+function childSendMsg(projectName,手机唯一标识码) {
   console.log('启动childSendMsg函数');
   console.log('现在通知手机更新脚本')
   child.send('小头爸爸说->大头儿子,让他们更新脚本吧');
 
   // setTimeout(发送项目更新信息,6000)
 
-  发送项目更新信息(projectName)
+  发送项目更新信息(projectName,手机唯一标识码)
 }
 
-function 发送项目更新信息(project) {
+function 发送项目更新信息(project,手机唯一标识码) {
   console.log("发送项目更新信息");
 
   // var projectName=project.projectName
@@ -325,7 +436,7 @@ function 发送项目更新信息(project) {
   //   "scriptVersionNumber":scriptVersionNumber
   // }
   项目更新信息 = JSON.stringify(project)
-  child.send('项目更新信息' + 项目更新信息)
+  child.send('项目更新信息' + 项目更新信息,手机唯一标识码)
 }
 
 

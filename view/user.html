@@ -50,6 +50,10 @@
       width: 200px;
       height: 88px;
     }
+    #button_index_designate {
+      width: 200px;
+      height: 88px;
+    }
 
     #project_list {
       position: relative;
@@ -108,8 +112,16 @@
           <button type="button" class="btn btn-default btn-info" id="button_save">保存</button>
           <button type="button" class="btn btn-default btn-success" id="button_index">运行当前项目的
             <br/>入口文件index.js</button>
+          <button type="button" class="btn btn-default btn-info" id="button_index_designate">运行项目
+            <br/>指定手机</button>
         </div>
         <p id=connectionState></p>
+        <div>
+          <textarea class="sansserif ex wh" id="identification_code">
+          这里放唯一标识码,用分号隔开
+          </textarea>
+        </div>
+        <!-- 唯一标识码 -->
         <!-- <div class="col-md-* col-sm-* col-xs-*" style="text-align:right;">
           <input type="text" value="" style="box-shadow:inset 0 0 4px #eee; margin:0; padding:6px 12px; border-radius:4px; border:1px solid silver; font-size:1.1em;"
             id="demo_q" placeholder="Search" />
@@ -167,16 +179,24 @@
 				btn.disabled = '';
 			},8000);//6秒内不可以重复点击，一秒等于1000毫秒
 
+    })
+    $("#button_index_designate").click(function (event) {
+      // alert('指定手机')
+      // $("#connectionState").text('正在连接手机,请稍后');
+      var filePath = $("#project-name").text()
+      console.log(filePath)
+      filePath = filePath.replace("选中的文件的路径=", "")
+      var arr = filePath.split("/");
+      var projectName=arr[1]
+      var 手机唯一标识码=$("#identification_code").text()
+      // alert(手机唯一标识码)
+      $.get("runIndexDesignateMobile"+"/"+projectName+"手机唯一标识码"+手机唯一标识码);
 
-
-
-
-
-
-
-
-
-
+			var btn = document.getElementById('button_index_designate');//首先需要获取的是哪一个按钮的id
+			btn.disabled = 'disabled';//只要点击就将按钮的可点击的状态更改为不可以点击的状态
+			setTimeout(function(){//设置时间，多久可以改变状态为可以点击
+				btn.disabled = '';
+			},8000);//6秒内不可以重复点击，一秒等于1000毫秒
 
     })
 
