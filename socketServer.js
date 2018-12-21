@@ -244,6 +244,8 @@ function remoteAddress和手机唯一标识码是否对应(remoteAddress,手机�
   if(客户端的手机信息.hasOwnProperty(手机唯一标识码)){
     var 手机ip=客户端的手机信息[手机唯一标识码].ip
     if(remoteAddress.indexOf(手机ip) != -1){
+      console.log(remoteAddress+' <=> '+手机唯一标识码);
+
       return true
     }
 
@@ -251,6 +253,7 @@ function remoteAddress和手机唯一标识码是否对应(remoteAddress,手机�
 
 
 
+  console.log(remoteAddress+' ~=~ '+手机唯一标识码);
 
   return false
 
@@ -281,7 +284,7 @@ function 命令指定手机更新指定项目的脚本(项目更新信息) {
 
 
       if(remoteAddress和手机唯一标识码是否对应(socket.remoteAddress,手机唯一标识码[j])){
-
+        socket.write(t + "你符合"+手机唯一标识码[j]+"! giveMeMobileInfo" + "\r\n");
 
         socket.write("都起床,小头爸爸说,得更新脚本啦" + "\r\n");
         socket.write('项目更新信息'+项目更新信息 + "\r\n");
