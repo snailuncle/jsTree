@@ -284,6 +284,8 @@ function 命令指定手机更新指定项目的脚本(项目更新信息) {
 
 
       if(remoteAddress和手机唯一标识码是否对应(socket.remoteAddress,手机唯一标识码[j])){
+        var t = config.getTime()
+
         socket.write(t + "你符合"+手机唯一标识码[j]+"! giveMeMobileInfo" + "\r\n");
 
         socket.write("都起床,小头爸爸说,得更新脚本啦" + "\r\n");
