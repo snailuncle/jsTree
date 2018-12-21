@@ -10,27 +10,27 @@ git status -s
 git branch
 
 创建分支
-git checkout master -b daily-12-21-服务器重装nodejs
+git checkout master -b daily-12-21-指定手机运行代码测试OK
 
 提交到暂存区
 git add .
 
 提交评论
-git commit -m 'daily-12-21-服务器重装nodejs'
+git commit -m 'daily-12-21-指定手机运行代码测试OK'
 
 
 推送到分支
-git push origin daily-12-21-服务器重装nodejs
+git push origin daily-12-21-指定手机运行代码测试OK
 
 
 切换主干||分支
 git checkout master     ||    git checkout  daily-10-1
 
 本地合并分支到主干
-git merge daily-12-21-服务器重装nodejs
+git merge daily-12-21-指定手机运行代码测试OK
 
 远端合并分支到主干
-git merge origin/daily-12-21-服务器重装nodejs
+git merge origin/daily-12-21-指定手机运行代码测试OK
 
 推送主干
 git push origin master

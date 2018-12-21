@@ -190,11 +190,12 @@ t1();
 
 
 
-process.on('message', (msg,手机唯一标识码) => {
+process.on('message', (msg) => {
   console.log('大头儿子收到小头爸爸发来的的消息->' + msg)
   if (msg.indexOf("项目更新信息") != -1) {
-    if (msg.indexOf("指定手机") != -1) {
-      命令指定手机更新指定项目的脚本(msg,手机唯一标识码)
+    if (msg.indexOf("手机唯一标识码") != -1) {
+
+      命令指定手机更新指定项目的脚本(msg)
     } else {
       命令所有手机更新指定项目的脚本(msg)
     }
@@ -236,13 +237,21 @@ function 命令所有手机更新指定项目的脚本(项目更新信息) {
 
 
 function remoteAddress和手机唯一标识码是否对应(remoteAddress,手机唯一标识码){
+  if(手机唯一标识码.length<6){return false}
   var fs = require('fs');
-  var 客户端的手机信息 = fs.readFile('./clientInfo.json')
+  var 客户端的手机信息 = fs.readFileSync('./clientInfo.json')
   客户端的手机信息=JSON.parse(客户端的手机信息)
-  var 手机ip=客户端的手机信息[手机唯一标识码].ip
-  if(remoteAddress.indexOf(手机ip) != -1){
-    return true
+  if(客户端的手机信息.hasOwnProperty(手机唯一标识码)){
+    var 手机ip=客户端的手机信息[手机唯一标识码].ip
+    if(remoteAddress.indexOf(手机ip) != -1){
+      return true
+    }
+
   }
+
+
+
+
   return false
 
 
@@ -255,12 +264,16 @@ function remoteAddress和手机唯一标识码是否对应(remoteAddress,手机�
 
 
 
-function 命令指定手机更新指定项目的脚本(项目更新信息, 手机唯一标识码) {
+function 命令指定手机更新指定项目的脚本(项目更新信息) {
+  var 项目更新信息=项目更新信息.replace('项目更新信息','')
+  console.log('项目更新信息=',项目更新信息);
+
   console.log("执行命令,指定手机更新指定项目的脚本");
   console.log("手机数量=" + 所有的手机.length);
   //ip数组
-  var 手机唯一标识码 = '项目更新信息'
-
+  var 项目中包含的手机唯一标识码=(JSON.parse(项目更新信息)).手机唯一标识码
+  var 手机唯一标识码 = 项目中包含的手机唯一标识码
+  console.log('项目中包含的手机唯一标识码=',项目中包含的手机唯一标识码)
   for (let j = 0; j < 手机唯一标识码.length; j++) {
     for (let i = 0; i < 所有的手机.length; i++) {
       var socket = 所有的手机[i]
@@ -271,7 +284,7 @@ function 命令指定手机更新指定项目的脚本(项目更新信息, 手�
 
 
         socket.write("都起床,小头爸爸说,得更新脚本啦" + "\r\n");
-        socket.write(项目更新信息 + "\r\n");
+        socket.write('项目更新信息'+项目更新信息 + "\r\n");
 
         console.log("本次通知手机对象%j:%j", socket.remoteAddress, socket.remotePort);
 

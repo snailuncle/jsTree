@@ -144,6 +144,7 @@ function downloadFile(project) {
   // router.get('/download/:fileName', async function (ctx) {
   http: //localhost:3000/
     var url = ip + ":" + port + "/download/" + project.projectName
+    // var url = "xiaoxinfeng.com.cn" + "/download/" + project.projectName
   console.log('手机请求的url=' + url);
   http.get(url, {}, function (res, err) {
     if (err) {

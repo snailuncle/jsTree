@@ -19,3 +19,5 @@
 pm2 deploy ecosystem.json production --force
 
 pm2 deploy ecosystem.json production --force
+
+pm2 deploy ecosystem.json production setup

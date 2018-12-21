@@ -1,3 +1,6 @@
+ // nubia/NX569J/NX569J:6.0.1/MMB29M/nubia04232153:user/release-keys;
+
+
 const port = require("./config.json")
 const config = require("./config.js")
 const Koa = require('koa');
@@ -218,14 +221,32 @@ router.get('/runIndex/:projectName', async (ctx, next) => {
 
 
 })
-router.get('/runIndexDesignateMobile/:projectNameAndMobileInfo', async (ctx, next) => {
+router.post('/runIndexDesignateMobile/:projectNameAndMobileInfo', async (ctx, next) => {
+  ctx.response.body = `后端收到runIndexDesignateMobile命令`;
+
+  await console.log('ctx.request.body=')
+  await console.log(ctx.request.body)
+
+  // ctx.request.body=
+  // { abc: '' }
+
+
+    // 等待3s
+  // await new Promise((resolve, reject) => {
+  //   setTimeout(resolve, 3000)
+  // })
+
+
+
+
+
   var fs = require('fs');
 
   console.log('要运行的项目名称=')
-  var projectNameAndMobileInfo = ctx.params.projectNameAndMobileInfo;
-  var projectName = projectNameAndMobileInfo.match(/.*?(?=手机唯一标识码)/)[0]
-  var 手机唯一标识码=projectNameAndMobileInfo.match(/手机唯一标识码(.*)/)[1]
+  var projectName = ctx.params.projectNameAndMobileInfo;
   console.log(projectName)
+  console.log('手机唯一标识码=')
+  var 手机唯一标识码=ctx.request.body.code
   console.log(手机唯一标识码)
   手机唯一标识码=手机唯一标识码.split(';')
   console.log(手机唯一标识码)
@@ -251,7 +272,6 @@ router.get('/runIndexDesignateMobile/:projectNameAndMobileInfo', async (ctx, nex
 
 
 
-  ctx.response.body = `后端收到runIndexDesignateMobile命令`;
 
 
   if (指定项目中有index文件(projectName)) {
@@ -344,8 +364,12 @@ function tellDesignateMobileDownloadProjectZipFile(projectName) {
   var fs = require('fs'); // 引入fs模块
   // setTimeout(childSendMsg,6000)
   var 手机唯一标识码=fs.readFileSync('./mobileCode.json')
-  手机唯一标识码=JSON.parse(手机唯一标识码)
-  childSendMsg(projectName,手机唯一标识码.手机唯一标识码)
+  // 手机唯一标识码=JSON.parse(手机唯一标识码)
+  console.log('手机唯一标识码='+手机唯一标识码)
+  console.log('下面是childSendMsg(projectName,手机唯一标识码)')
+  projectName.手机唯一标识码=(JSON.parse(手机唯一标识码)).手机唯一标识码
+  childSendMsg(projectName)
+
 
 
 }
@@ -416,17 +440,19 @@ child.on('message', (msg) => {
   console.log('大头儿子说->' + msg)
 });
 
-function childSendMsg(projectName,手机唯一标识码) {
+function childSendMsg(projectName) {
+  // console.log('childSendMsg(projectName,手机唯一标识码)')
+  // console.log('手机唯一标识码=',手机唯一标识码)
   console.log('启动childSendMsg函数');
   console.log('现在通知手机更新脚本')
   child.send('小头爸爸说->大头儿子,让他们更新脚本吧');
 
   // setTimeout(发送项目更新信息,6000)
 
-  发送项目更新信息(projectName,手机唯一标识码)
+  发送项目更新信息(projectName)
 }
 
-function 发送项目更新信息(project,手机唯一标识码) {
+function 发送项目更新信息(project) {
   console.log("发送项目更新信息");
 
   // var projectName=project.projectName
@@ -436,7 +462,9 @@ function 发送项目更新信息(project,手机唯一标识码) {
   //   "scriptVersionNumber":scriptVersionNumber
   // }
   项目更新信息 = JSON.stringify(project)
-  child.send('项目更新信息' + 项目更新信息,手机唯一标识码)
+  console.log('项目更新信息=',项目更新信息)
+  // console.log('手机唯一标识码=',手机唯一标识码)
+  child.send('项目更新信息' + 项目更新信息)
 }
 
 

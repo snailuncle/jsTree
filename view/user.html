@@ -188,9 +188,25 @@
       filePath = filePath.replace("选中的文件的路径=", "")
       var arr = filePath.split("/");
       var projectName=arr[1]
-      var 手机唯一标识码=$("#identification_code").text()
+      var 手机唯一标识码=$("#identification_code").val()
       // alert(手机唯一标识码)
-      $.get("runIndexDesignateMobile"+"/"+projectName+"手机唯一标识码"+手机唯一标识码);
+      // $.get("runIndexDesignateMobile"+"/"+projectName+"手机唯一标识码"+手机唯一标识码);
+      console.log("$.ajax({之前手机唯一标识码=")
+      console.log(手机唯一标识码);
+
+      // $.ajax({
+      //   url: "runIndexDesignateMobile"+"/"+projectName,
+      //   type: 'post',
+      //   dataType: 'text',
+      //   data: 手机唯一标识码,
+      //   success: function (data) {}
+      // });
+
+
+      $.post("runIndexDesignateMobile"+"/"+projectName,{'code':手机唯一标识码});
+
+
+
 
 			var btn = document.getElementById('button_index_designate');//首先需要获取的是哪一个按钮的id
 			btn.disabled = 'disabled';//只要点击就将按钮的可点击的状态更改为不可以点击的状态
