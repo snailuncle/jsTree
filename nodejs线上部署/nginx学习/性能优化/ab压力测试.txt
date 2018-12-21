@@ -1,0 +1,9 @@
+yum install httpd-tools
+
+ab -n 2000 -c 2 http://127.0.0.1
+
+-n 总的请求数
+-c 并发数
+-k 是否开启长连接
+
+ab -n 200 -c 2 http://xiaoxinfeng.com.cn/code

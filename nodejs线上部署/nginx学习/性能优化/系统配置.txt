@@ -1,0 +1,16 @@
+vim /etc/security/limits.conf  //文件数量限制
+
+CPU亲和
+cat /proc/cpuinfo | grep "cpu cores" | uniq
+cat /proc/cpuinfo | grep "processor" | wc -
+cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l    // 核数   id  去重  统计
+
+cp  ~/.ssh/authorized_keys ~/.ssh/id_rsa.pub
+
+\sor\s+   sql注入攻击
+
+
+	lua_package_path "/etc/nginx/conf.d/waf/?.lua";
+    lua_shared_dict limit 10m;
+    init_by_lua_file  /etc/nginx/conf.d/waf/init.lua;
+	access_by_lua_file /etc/nginx/conf.d/waf/waf.lua;

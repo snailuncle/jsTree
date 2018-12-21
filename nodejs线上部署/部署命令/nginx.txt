@@ -1,0 +1,11 @@
+
+curl -I xiaoxinfeng.com.cn
+useradd -M -s /sbin/nologin nginx //创建nginx 运行用户
+ln -s /var/nginx/sbin/nginx /usr/local/sbin/ //nginx添加软连接
+
+ source /etc/profile
+
+ /etc/bash.bashrc
+
+ su - root //这种切换方式是完全root  shell
+sudo su root  这种是不完全切换  shell

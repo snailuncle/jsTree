@@ -1,0 +1,29 @@
+imooc-com-8081.conf
+[root@iZm5e6a02rvv1zo3ey55slZ myconf]# vim imooc-com-8081.conf
+
+  1 upstream autojsOnline {
+  2     server 127.0.0.1:3000;
+  3 }
+  4
+  5 server{
+  6     listen       80;
+  7     listen       3000;
+  8     server_name  www.xiaoxinfeng.com.cn;
+  9
+ 10     location / {
+ 11         proxy_set_header X-Real-IP $remote_addr;
+ 12         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ 13         proxy_set_header Host $http_host;
+ 14         proxy_set_header X-Nginx-Proxy true;
+ 15
+ 16         proxy_pass http://autojsOnline;
+ 17         proxy_redirect off;
+ 18     }
+ 19
+ 20     #location ~* ^.+\.(jpg|jpeg|gif|png|ico|css|js|pdf|txt) {
+ 21     #    root /www/movie/production/current/public;
+ 22     #}
+ 23 }
+ 24
+~
+~

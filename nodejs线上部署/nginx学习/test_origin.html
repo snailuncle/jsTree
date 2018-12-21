@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>测试ajax和跨域访问</title>
+  <script src='http://libs.baidu.com/jquery/2.1.4/jquery.min.js'></script>
+</head>
+<script type='text/javascript'>
+$(document).ready(function(){
+  $.ajax({
+    type:'GET',
+    url:'http://tieba.baidu.com/home/main?un=C%E9%AD%94%E6%98%93%E8%8B%B1%E6%A3%8B&fr=home&id=7e8a43e9ad94e69893e88bb1e6a38b7114',
+    success:function(data){
+      alert('success!!!');
+    },
+    error:function(){
+      alert('fail!!!请刷新再试试')
+    }
+  })
+})
+</script>
+<body style="background-color:#ff00ff;">
+  <h1>测试跨域访问</h1>
+</body>
+</html>

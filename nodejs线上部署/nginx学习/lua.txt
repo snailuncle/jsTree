@@ -1,0 +1,101 @@
+yum install lua
+vim luaTest.sh
+  1 #!/usr/bin/lua
+  2 print("i'm jeson!")
+
+chmod a+rx ./luaTest.sh   添加权限
+
+tar -xzvf
+
+
+make install  PREFIX=/usr/local/LuaJIT
+
+export LUAJIT_LIB=/usr/local/LuaJIT/lib
+export LUAJIT_INC=/usr/local/LuaJIT/include/luajit-2.0
+
+cd /opt/download
+
+wget https://github.com/simpl/ngx_devel_kit/archive/v0.3.0.tar.gz
+
+wget https://github.com/openresty/lua-nginx-module/archive/v0.10.9rc7.tar.gz
+
+
+yum install -y gcc g++ gcc-c++ zlib zlib-devel openssl openssl-devel pcre pcre-devel
+
+
+./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC' --with-ld-opt='-Wl,-z,relro -Wl,-z,now -pie' --add-module=/opt/download/ngx_devel_kit-0.3.0 --add-module=/opt/download/lua-nginx-module-0.10.9rc7
+
+
+make -j 4 && make install
+
+作者：Jeson老师
+链接：http://www.imooc.com/article/19597
+来源：慕课网
+冼星扉
+老师最后一步
+
+# echo "/usr/local/LuaJIT/lib"  >> /etc/ld.so.conf
+
+重新加载共享库
+
+# ldconfig
+yum install memcached
+
+    clientIP=ngx.req.get_headers()["x_forwarded_for"]
+ 17             ngx.say("IP:",clientIP)
+telnet 127.0.0.1 11211
+netstat -tnl |grep 23
+yum -y install telnet-server.x86_64
+
+yum -y install telnet.x86_64
+
+yum -y install xinetd.x86_64
+
+
+
+设置开机启动：
+
+systemctl enable xinetd.service
+
+systemctl enable telnet.socket
+
+开启service：
+
+systemctl start telnet.socket
+
+systemctl start xinetd
+
+
+
+开启防火墙端口：
+
+firewall-cmd --permanent --add-port=23/tcp
+
+firewall-cmd --reload
+---------------------
+作者：钠离子zi
+来源：CSDN
+原文：https://blog.csdn.net/u012259256/article/details/67639982
+版权声明：本文为博主原创文章，转载请附上博文链接！
+
+
+1、yum install memcached安装memecached
+
+2、chkconfig memcached on设置memcached开机启动
+
+3、service memcached start立即启动memcached服务
+
+4、rpm -ql memcached 查找memcached安装位置
+
+5、cat /etc/sysconfig/memcached 查看memcached配置文件
+
+
+telnet 127.0.0.1 11211
+
+set 60.221.144.36 0 0 1
+1
+STORED
+get 60.221.144.36
+VALUE 60.221.144.36 0 1
+1
+END

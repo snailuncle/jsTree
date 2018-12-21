@@ -1,0 +1,76 @@
+防火墙版本  rpm -q iptables
+防火墙规则 iptables -L --line-numbers
+selinux状态   cat /etc/selinux/config
+以centos7为例 ,以 修改为阿里的yum源
+1. 备份本地yum源
+ mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bak
+2.获取阿里yum源配置文件
+ wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+3.更新cache
+ yum makecache
+4.查看
+ yum -y update
+5.最后你就可以链接国内镜像了,其实就是那个什么城XXX的 。。。
+ mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bak
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+yum makecache
+yum -y update
+
+yum -y install gcc gcc-c++ autoconf pcre pcre-devel make automake
+yum -y install wget httpd-tools vim
+cd /opt;mkdir app download logs work backup
+ yum list | grep gcc
+安装nginx
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/OS/OSRELEASE/$basearch/
+gpgcheck=0
+enabled=1
+
+vim /etc/yum.repos.d/nginx.repo
+yum list | grep nginx
+yum install nginx
+rpm -ql nginx
+重启nginx
+systemctl restart nginx.service
+
+curl -v http://www.imooc.com > /dev/null
+nginx -t -c /etc/nginx/nginx.conf  //检查配置
+nginx -s reload -c /etc/nginx/nginx.conf  //重启配置
+ps -aux | grep nginx
+
+curl http://127.0.0.1
+tail -n 200 /var/log/nginx/access.log
+
+ip a  //查看本机ip
+http://118.190.206.181/mystatus
+
+
+这里可以看到，80端口是被占用的 。我们再详细看看占用80的是什么
+ps -ef | grep 80
+
+然后找到pid，杀掉这些程序
+//-s 9 代表的是快速强制的杀掉pid程序
+kill -s 9 pid
+
+[root@localhost ~]# systemctl stop nginx
+[root@localhost ~]# systemctl start nginx
+[root@localhost ~]# systemctl status nginx
+gg=G   format code
+
+
+
+       limit_conn_zone $binary_remote_addr zone=conn_zone:1m;
+       limit_req_zone $binary_remote_addr zone=req_zone:1m  rate=1r/s;
+
+ab -n 50 -c 20 http://172.31.118.112/1.html
+-n即requests，用于指定压力测试总共的执行次数。
+-c即concurrency，用于指定压力测试的并发数。
+-t即timelimit，等待响应的最大时间(单位：秒)。
+
+static_server.conf
+gzip ./rightArm.jpg    预压缩图片
+
+set x_real_ip=$remote_addr
+
+

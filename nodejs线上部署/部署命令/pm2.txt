@@ -1,0 +1,21 @@
+用法
+
+最简单的启用一个应用:  pm2 start app.js
+
+停止：pm2 stop app_name|app_id
+
+删除：pm2 delete app_name|app_id
+
+重启：pm2 restart app_name|app_id
+
+停止所有：pm2 stop all
+
+查看所有的进程：pm2 list
+
+查看所有的进程状态：pm2 status
+
+查看某一个进程的信息：pm2 describe app_name|app_id
+
+pm2 deploy ecosystem.json production --force
+
+pm2 deploy ecosystem.json production --force

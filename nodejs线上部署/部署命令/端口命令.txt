@@ -32,6 +32,7 @@ netstat -aon|grep "8811"
 
 sudo lsof -n -P | grep :8811
 
+sudo lsof -n -P | grep :3000
 
 其他的停止nginx 方式：
 
