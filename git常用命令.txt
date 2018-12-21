@@ -18,7 +18,6 @@ git add .
 提交评论
 git commit -m 'daily-12-21-看了一遍设计模式'
 
-git commit -m 'daily-12-14-补充两条git命令'
 
 推送到分支
 git push origin daily-12-21-看了一遍设计模式
