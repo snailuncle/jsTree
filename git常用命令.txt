@@ -10,27 +10,27 @@ git status -s
 git branch
 
 创建分支
-git checkout master -b daily-12-21-指定手机运行代码测试OK
+git checkout master -b daily-12-22-看了一遍vue文档-单向绑定可以
 
 提交到暂存区
 git add .
 
 提交评论
-git commit -m 'daily-12-21-指定手机运行代码测试OK'
+git commit -m 'daily-12-22-看了一遍vue文档-单向绑定可以'
 
 
 推送到分支
-git push origin daily-12-21-指定手机运行代码测试OK
+git push origin daily-12-22-看了一遍vue文档-单向绑定可以
 
 
 切换主干||分支
 git checkout master     ||    git checkout  daily-10-1
 
 本地合并分支到主干
-git merge daily-12-21-指定手机运行代码测试OK
+git merge daily-12-22-看了一遍vue文档-单向绑定可以
 
 远端合并分支到主干
-git merge origin/daily-12-21-指定手机运行代码测试OK
+git merge origin/daily-12-22-看了一遍vue文档-单向绑定可以
 
 推送主干
 git push origin master
